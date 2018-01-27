@@ -32,8 +32,8 @@ class TransCheckCommand extends ContainerAwareCommand
     {
         $output->writeln('TRANS:CHECK => INFO : Starting Check Process ...');
         $filesystem = new Filesystem();
-        $otherdata=[];
-        $defaultdata=[];
+        $otherdata = [];
+        $defaultdata = [];
 
         // Get Configurations and Files to process
         $common = new CommonUtils();
@@ -75,7 +75,7 @@ class TransCheckCommand extends ContainerAwareCommand
                     foreach ($defaultdata as $k => $v) {
 
                         if ($key == $v) {
-                            $output->writeln('                  ID="'.$k.'" VALUE="'.$v.'"');
+                            $output->writeln('                  ID="' . $k . '" VALUE="' . $v . '"');
                         }
                     }
                 }
@@ -119,7 +119,7 @@ class TransCheckCommand extends ContainerAwareCommand
                         foreach ($otherdata as $k => $v) {
 
                             if ($key == $v) {
-                                $output->writeln('                  ID="'.$k.'" VALUE="'.$v.'"');
+                                $output->writeln('                  ID="' . $k . '" VALUE="' . $v . '"');
                             }
                         }
 

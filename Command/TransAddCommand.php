@@ -97,21 +97,20 @@ class TransAddCommand extends ContainerAwareCommand
                         $a = 0;
                         $replytarget3 = "";
                         while ($a <= 0) {
-                            if($config['yandex_api_key']!=''){
-                                $trans=$common->YandexTrans($replytarget2,$domainfiles['locale'],$other['locale'],$config,$output);
-                                if($trans=='')
-                                {
-                                    $yandex='';
-                                    $yandexraw='';
-                                }else{
-                                    $yandex=' (Yandex Translation: '.$trans.' )';
-                                    $yandexraw=$trans;
+                            if ($config['yandex_api_key'] != '') {
+                                $trans = $common->YandexTrans($replytarget2, $domainfiles['locale'], $other['locale'], $config, $output);
+                                if ($trans == '') {
+                                    $yandex = '';
+                                    $yandexraw = '';
+                                } else {
+                                    $yandex = ' (Yandex Translation: ' . $trans . ' )';
+                                    $yandexraw = $trans;
                                 }
                             } else {
-                                $yandex='';
-                                $yandexraw='';
+                                $yandex = '';
+                                $yandexraw = '';
                             }
-                            $question = new Question('TRANS:ADD => QUESTION : Please, enter value for ID="' . $replytarget . '" in file "' . $other['filename'] . '"'.$yandex.' : ', $yandexraw);
+                            $question = new Question('TRANS:ADD => QUESTION : Please, enter value for ID="' . $replytarget . '" in file "' . $other['filename'] . '"' . $yandex . ' : ', $yandexraw);
                             $replytarget3 = $helper->ask($input, $output, $question);
                             if (!$replytarget3 == '' && is_string($replytarget3)) {
                                 $a = 1;

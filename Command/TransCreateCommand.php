@@ -93,18 +93,15 @@ class TransCreateCommand extends ContainerAwareCommand
                         $common->putArrayInFile($path, $config['default_format'], []);
                         $output->writeln('TRANS:CREATE => SUCCESS : File "' . $domfile['filename'] . '" created!');
 
-                    } else if ($a == 2)
-                    {
+                    } else if ($a == 2) {
                         $clonedata = $common->getArrayFromFile($domainfiles['path'], $domainfiles['format']);
                         $common->putArrayInFile($path, $config['default_format'], $clonedata);
                         $output->writeln('TRANS:CREATE => SUCCESS : File "' . $domfile['filename'] . '" cloned from default file created!');
-                    }else if($a==3)
-                    {
+                    } else if ($a == 3) {
                         $clonedata = $common->getArrayFromFile($domainfiles['path'], $domainfiles['format']);
 
-                        foreach($clonedata as $key => $value)
-                        {
-                            $clonedata[$key]=$common->YandexTrans($value,$domainfiles['locale'],$domfile['locale'],$config,$output);
+                        foreach ($clonedata as $key => $value) {
+                            $clonedata[$key] = $common->YandexTrans($value, $domainfiles['locale'], $domfile['locale'], $config, $output);
                         }
 
                         $common->putArrayInFile($path, $config['default_format'], $clonedata);

@@ -69,21 +69,20 @@ class TransSyncCommand extends ContainerAwareCommand
                         $reply = 0;
                         while ($a <= 0) {
                             $reply = 0;
-                            if($config['yandex_api_key']!=''){
-                                $trans=$common->YandexTrans($defaultdata[$key],$domainfiles['locale'],$other['locale'],$config,$output);
-                                if($trans=='')
-                                {
-                                    $yandex='';
-                                    $yandexraw='';
-                                }else{
-                                    $yandex=' (Yandex Translation: '.$trans.' )';
-                                    $yandexraw=$trans;
+                            if ($config['yandex_api_key'] != '') {
+                                $trans = $common->YandexTrans($defaultdata[$key], $domainfiles['locale'], $other['locale'], $config, $output);
+                                if ($trans == '') {
+                                    $yandex = '';
+                                    $yandexraw = '';
+                                } else {
+                                    $yandex = ' (Yandex Translation: ' . $trans . ' )';
+                                    $yandexraw = $trans;
                                 }
                             } else {
-                                $yandex='';
-                                $yandexraw='';
+                                $yandex = '';
+                                $yandexraw = '';
                             }
-                            $question = new Question('TRANS:SYNC => QUESTION : Value for ' . $other['filename'] .$yandex.' : ', $yandexraw);
+                            $question = new Question('TRANS:SYNC => QUESTION : Value for ' . $other['filename'] . $yandex . ' : ', $yandexraw);
                             $reply = $helper->ask($input, $output, $question);
                             if (is_string($reply)) {
                                 $a = 1;
@@ -120,19 +119,18 @@ class TransSyncCommand extends ContainerAwareCommand
                         $reply = 0;
                         while ($a <= 0) {
                             $reply = 0;
-                            if($config['yandex_api_key']!=''){
-                                $trans=$common->YandexTrans($otherdata[$key],$other['locale'],$domainfiles['locale'],$config,$output);
-                                if($trans=='')
-                                {
-                                    $yandex='';
-                                    $yandexraw='';
-                                }else{
-                                    $yandex=' (Yandex Translation: '.$trans.' )';
-                                    $yandexraw=$trans;
+                            if ($config['yandex_api_key'] != '') {
+                                $trans = $common->YandexTrans($otherdata[$key], $other['locale'], $domainfiles['locale'], $config, $output);
+                                if ($trans == '') {
+                                    $yandex = '';
+                                    $yandexraw = '';
+                                } else {
+                                    $yandex = ' (Yandex Translation: ' . $trans . ' )';
+                                    $yandexraw = $trans;
                                 }
                             } else {
-                                $yandex='';
-                                $yandexraw='';
+                                $yandex = '';
+                                $yandexraw = '';
                             }
                             $question = new Question('TRANS:SYNC => QUESTION: Value for default file ' . $domainfiles['default'] . $yandex . ' : ', $yandexraw);
                             $reply = $helper->ask($input, $output, $question);

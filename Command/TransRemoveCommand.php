@@ -38,8 +38,8 @@ class TransRemoveCommand extends ContainerAwareCommand
 
         // Get Configurations and Files to process
         $common = new CommonUtils();
-        $config=$common->getConfig($this->getContainer());
-        $domainfiles=$common->getFiles($this->getContainer(),$input->getArgument('domain'));
+        $config = $common->getConfig($this->getContainer());
+        $domainfiles = $common->getFiles($this->getContainer(), $input->getArgument('domain'));
 
         //Previous checks
         if (!in_array($input->getArgument('domain'), $config['domains'])) {
@@ -48,7 +48,7 @@ class TransRemoveCommand extends ContainerAwareCommand
         } else if (!$filesystem->exists($config['main_folder'])) {
             $output->writeln('TRANS:REMOVE => ERROR : Main folder not found. Bad configuration?');
             die();
-        } else if(count($config['other_locales'])==0){
+        } else if (count($config['other_locales']) == 0) {
             $output->writeln('TRANS:REMOVE => WARNING : No locales configured except default. Process will only work with default locale translations.');
         }
 

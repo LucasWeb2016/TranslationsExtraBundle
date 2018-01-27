@@ -72,7 +72,7 @@ class TransImportCommand extends ContainerAwareCommand
                         foreach ($value as $v) {
                             if ($filesystem->exists($config['main_folder'] . '/' . $input->getArgument('domain') . '.' . $file['locale'] . '.' . $v)) {
                                 $found['path'] = $config['main_folder'] . '/' . $input->getArgument('domain') . '.' . $file['locale'] . '.' . $v;
-                                $found['format']= $key;
+                                $found['format'] = $key;
                                 break;
                             }
                         }

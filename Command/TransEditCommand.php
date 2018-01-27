@@ -84,18 +84,17 @@ class TransEditCommand extends ContainerAwareCommand
                         $a = 0;
                         $replytarget = 0;
                         while ($a <= 0) {
-                            if($config['yandex_api_key']!='' && isset($defaultdata)){
-                                $trans=$common->YandexTrans($defaultdata[$input->getArgument('id')],$domainfiles['locale'],$other['locale'],$config,$output);
-                                if($trans=='')
-                                {
-                                    $yandex='';
-                                }else{
-                                    $yandex=' (Yandex Translation: '.$trans.' )';
+                            if ($config['yandex_api_key'] != '' && isset($defaultdata)) {
+                                $trans = $common->YandexTrans($defaultdata[$input->getArgument('id')], $domainfiles['locale'], $other['locale'], $config, $output);
+                                if ($trans == '') {
+                                    $yandex = '';
+                                } else {
+                                    $yandex = ' (Yandex Translation: ' . $trans . ' )';
                                 }
                             } else {
-                                $yandex='';
+                                $yandex = '';
                             }
-                            $question = new Question('TRANS:EDIT => QUESTION : New value for ID=' . $input->getArgument('id') . ' in file ' . $other['filename'] . ' (Current="' . $otherdata[$input->getArgument('id')] . '")'.$yandex.' : ', $otherdata[$input->getArgument('id')]);
+                            $question = new Question('TRANS:EDIT => QUESTION : New value for ID=' . $input->getArgument('id') . ' in file ' . $other['filename'] . ' (Current="' . $otherdata[$input->getArgument('id')] . '")' . $yandex . ' : ', $otherdata[$input->getArgument('id')]);
                             $replytarget = $helper->ask($input, $output, $question);
                             if (!$replytarget == '' && is_string($replytarget)) {
                                 $a = 1;

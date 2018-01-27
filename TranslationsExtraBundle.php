@@ -20,7 +20,6 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
  *
  * @author LucasWeb <https://github.com/LucasWeb2016>
  */
-
 class TranslationsExtraBundle extends Bundle
 {
     public function registerCommands(Application $application)
