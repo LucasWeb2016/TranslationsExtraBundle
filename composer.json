@@ -1,0 +1,26 @@
+{
+  "name": "lucasweb/translations",
+  "type": "symfony-bundle",
+  "description": "Add extra commands to Symfony for easy translations and translation files management.",
+  "keywords": ["console commands", "symfony translations", "symfony xliff", "symfony translations manager"],
+  "homepage": "https://github.com/LucasWeb2016/symfony-TranslationExtraBundle",
+  "license": "GPL-3.0-or-later",
+  "minimum-stability": "dev",
+  "authors": [
+        {
+            "name": "Lucasweb",
+             "homepage": "https://github.com/LucasWeb2016/Lucasweb-TranslationsExtraBundle"
+        }
+    ],
+  "require": {
+    "php": ">=5.6.3",
+    "symfony/console": "^2.3",
+    "symfony/framework-bundle": "^2.3",
+    "symfony/translation": "^2.3",
+    "symfony/yaml": "^2.3",
+    "yandex/translate-api": "1.5.x"
+  },
+  "autoload": {
+    "psr-4": { "Lucasweb\\TranslationsExtraBundle\\": "" }
+  }
+}
