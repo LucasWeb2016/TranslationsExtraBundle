@@ -1,4 +1,4 @@
-# Lucasweb\TranslationsExtraBundle
+﻿# Lucasweb\TranslationsExtraBundle
 
 [![Symfony Tested](https://img.shields.io/badge/Tested-Symfony%20%3E3.4-green.svg)]() [![License](https://img.shields.io/badge/License-MIT-orange.svg)]()
 
@@ -26,11 +26,7 @@ This Bundle adds extra commands to symfony for easy managing translations from t
  Some commands are still very simple and could give more information or functionalities, it is an initial version that still has much to improve.
 # Requeriments
  - Symfony >3.4 (Not tested in previous versions)
- - PHP >5.6.3 
- - Symfony/Console ^2.3
- - Symfony/Framework-bundle ^2.3
- - Symfony/Translation ^2.3
- - Symfony/Yaml ^2.3
+ - PHP >5.6.3
  - [Yandex/Translate-api](https://github.com/yandex-php/translate-api) 1.5.x
 
 # Documentation
