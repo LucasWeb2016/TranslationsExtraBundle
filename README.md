@@ -2,6 +2,8 @@
 
 [![Symfony Tested](https://img.shields.io/badge/Tested-Symfony%20%3E3.4-green.svg)]() [![License](https://img.shields.io/badge/License-MIT-orange.svg)]()
 
+[![knpbundles.com](http://knpbundles.com/LucasWeb2016/TranslationsExtraBundle/badge-short)](http://knpbundles.com/LucasWeb2016/TranslationsExtraBundle)
+
 **Bundle with extra developer tools for Symfony Framework**
 
 This Bundle adds extra commands to symfony for easy managing translations from translation files.
