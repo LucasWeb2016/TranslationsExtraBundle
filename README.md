@@ -40,7 +40,7 @@ This Bundle adds extra commands to symfony for easy managing translations from t
 This Bundle only needs a few fields in Yaml configuration files to start working:
 
     translations_extra:
-	    format: 'xml' 
+	    default_format: 'xml' 
 	    default_locale: 'es'
 	    other_locales: []
 	    domains: ['messages','validators']
