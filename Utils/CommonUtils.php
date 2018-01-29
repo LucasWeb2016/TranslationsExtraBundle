@@ -4,6 +4,7 @@ namespace Lucasweb\TranslationsExtraBundle\Utils;
 
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Yaml\Yaml;
+use Symfony\Component\Yaml\Exception\ParseException;
 use Yandex\Translate\Translator;
 use Yandex\Translate\Exception;
 
@@ -48,7 +49,7 @@ class CommonUtils
         $files = [];
 
         foreach ($this->file_extensions as $key => $value) {
-            foreach($value as $extension) {
+            foreach ($value as $extension) {
                 if ($filesystem->exists($container->getParameter('translationsextra.main_folder') . '/' . $domain . '.' . $container->getParameter('translationsextra.default_locale') . '.' . $extension)) {
                     $files['default'] = $domain . '.' . $container->getParameter('translationsextra.default_locale') . '.' . $extension;
                     $files['path'] = $container->getParameter('translationsextra.main_folder') . '/' . $domain . '.' . $container->getParameter('translationsextra.default_locale') . '.' . $extension;
@@ -62,15 +63,15 @@ class CommonUtils
         if (!isset($files['default'])) {
             $files['default'] = $domain . '.' . $container->getParameter('translationsextra.default_locale') . '.' . $this->file_extensions[$container->getParameter('translationsextra.default_format')][0];
             $files['path'] = '';
-            $files['others']=[];
-            $files['locale']=$container->getParameter('translationsextra.default_locale');
+            $files['others'] = [];
+            $files['locale'] = $container->getParameter('translationsextra.default_locale');
             $files['format'] = '';
         }
 
         foreach ($container->getParameter('translationsextra.other_locales') as $locale) {
             $arraytemp = [];
             foreach ($this->file_extensions as $key => $value) {
-                foreach($value as $extension) {
+                foreach ($value as $extension) {
                     if ($filesystem->exists($container->getParameter('translationsextra.main_folder') . '/' . $domain . '.' . $locale . '.' . $extension)) {
                         $arraytemp['filename'] = $domain . '.' . $locale . '.' . $extension;
                         $arraytemp['path'] = $container->getParameter('translationsextra.main_folder') . '/' . $domain . '.' . $locale . '.' . $extension;
@@ -83,11 +84,11 @@ class CommonUtils
             if (!isset($arraytemp['filename'])) {
                 $arraytemp['filename'] = $domain . '.' . $locale . '.' . $this->file_extensions[$container->getParameter('translationsextra.default_format')][0];
                 $arraytemp['path'] = '';
-                $arraytemp['locale']=$locale;
-                $arraytemp['format']='';
+                $arraytemp['locale'] = $locale;
+                $arraytemp['format'] = '';
             }
 
-            $files['others'][]=$arraytemp;
+            $files['others'][] = $arraytemp;
         }
 
         return $files;
@@ -96,43 +97,67 @@ class CommonUtils
     /*
      * get array from file contents
      */
-    function getArrayFromFile($filepath,$format){
-        $result=[];
+    function getArrayFromFile($filepath, $format)
+    {
+        $result = [];
         switch ($format) {
             case 'xml':
-                $xml = simplexml_load_file($filepath);
+                libxml_use_internal_errors(true);
+                $xml = simplexml_load_file($filepath, 'SimpleXMLElement', LIBXML_NOWARNING);
+                if ($xml === false) {
+                    return false;
+                }
                 $result = [];
                 $count = 0;
                 foreach ($xml->file->body[0] as $unit) {
-                    $result[(string)$unit->source[0]]=(string)$unit->target[0];
+                    $result[(string)$unit->source[0]] = (string)$unit->target[0];
                 }
                 ksort($result);
+                return $result;
                 break;
             case 'yaml':
-                $result = Yaml::parse(file_get_contents($filepath));
-                ksort($result);
+                $error = 0;
+                try {
+                    $result = Yaml::parse(file_get_contents($filepath));
+                } catch (ParseException $e) {
+                    $error = 1;
+                }
+
+                if ($error == 0 && !is_string($result)) {
+                    ksort($result);
+                    return $result;
+                } else {
+                    return false;
+                }
                 break;
             case 'php':
-                $result=include $filepath;
-                ksort($result);
+                $check = exec("php -l {$filepath}");
+                if (substr($check, 0, 9) === "No syntax") {
+                    $result = include $filepath;
+                    ksort($result);
+                    return $result;
+                } else {
+                    return false;
+                }
+
         }
-        return $result;
     }
 
     /*
      * save array in file
      */
-    function putArrayInFile($filepath,$format,$data){
+    function putArrayInFile($filepath, $format, $data)
+    {
         ksort($data);
         switch ($format) {
             case 'xml':
-                $result='<?xml version="1.0"?>
+                $result = '<?xml version="1.0"?>
     <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
         <file source-language="%locale%" target-language="%locale%" datatype="plaintext" original="file.ext">
             <body>';
-                $locale = explode("/",$filepath);
-                $locale = explode(".",$locale[count($locale)-1]);
-                $result = str_replace("%locale%", $locale[1] , $result);
+                $locale = explode("/", $filepath);
+                $locale = explode(".", $locale[count($locale) - 1]);
+                $result = str_replace("%locale%", $locale[1], $result);
 
                 $template = '
                 <trans-unit id="%key%">
@@ -140,10 +165,10 @@ class CommonUtils
                     <target>%value%</target>
                 </trans-unit>';
 
-                foreach($data as $key=>$value) {
+                foreach ($data as $key => $value) {
                     $resulttemp = str_replace("%key%", $key, $template);
-                    if($value != strip_tags($value)) {
-                        $result .= str_replace("%value%", '<![CDATA['.$value.']]>', $resulttemp);
+                    if ($value != strip_tags($value)) {
+                        $result .= str_replace("%value%", '<![CDATA[' . $value . ']]>', $resulttemp);
                     } else {
                         $result .= str_replace("%value%", $value, $resulttemp);
                     }
@@ -160,19 +185,19 @@ class CommonUtils
                 file_put_contents($filepath, $result);
                 break;
             case 'php':
-                $template ="
+                $template = "
     '%key%' => '%value%'";
-                $result='<?php return array (';
-                $i=0;
-                foreach($data as $key=>$value) {
-                    if($i==1){
-                        $result.=',';
+                $result = '<?php return array (';
+                $i = 0;
+                foreach ($data as $key => $value) {
+                    if ($i == 1) {
+                        $result .= ',';
                     }
                     $resulttemp = str_replace("%key%", $key, $template);
-                    $result.=str_replace("%value%", $value, $resulttemp);
-                    $i=1;
+                    $result .= str_replace("%value%", $value, $resulttemp);
+                    $i = 1;
                 }
-                $result.=');';
+                $result .= ');';
                 file_put_contents($filepath, $result);
         }
     }
@@ -180,23 +205,24 @@ class CommonUtils
     /*
      * Get files to import from a Bundle folder
      */
-    function GetImportFiles($folder,$domain,$config){
+    function GetImportFiles($folder, $domain, $config)
+    {
         $filesystem = new Filesystem();
         $files = [];
-        $arraylocales[]=$config['default_locale'];
-        $arraylocales=array_merge($arraylocales,$config['other_locales']);
+        $arraylocales[] = $config['default_locale'];
+        $arraylocales = array_merge($arraylocales, $config['other_locales']);
 
-        foreach($arraylocales as $locale) {
-            foreach($this->file_extensions as $key => $value){
+        foreach ($arraylocales as $locale) {
+            foreach ($this->file_extensions as $key => $value) {
 
                 foreach ($value as $extension) {
 
                     if ($filesystem->exists($folder . '/' . $domain . '.' . $locale . '.' . $extension)) {
                         $temp['filename'] = $domain . '.' . $locale . '.' . $extension;
                         $temp['path'] = $folder . '/' . $domain . '.' . $locale . '.' . $extension;
-                        $temp['locale']=$locale;
-                        $temp['format']=$key;
-                        $files[]=$temp;
+                        $temp['locale'] = $locale;
+                        $temp['format'] = $key;
+                        $files[] = $temp;
                     }
                 }
             }
@@ -205,10 +231,11 @@ class CommonUtils
         return $files;
     }
 
-    function YandexTrans($message,$localeA,$localeB,$config,$output){
+    function YandexTrans($message, $localeA, $localeB, $config, $output)
+    {
         try {
             $translator = new Translator($config['yandex_api_key']);
-            $translation = $translator->translate($message, $localeA.'-'.$localeB);
+            $translation = $translator->translate($message, $localeA . '-' . $localeB);
 
             return (string)$translation;
         } catch (Exception $e) {

@@ -1,7 +1,7 @@
 {
   "name": "lucasweb/translations",
   "type": "symfony-bundle",
-  "description": "Add extra commands to Symfony for easy translations and translation files management.",
+  "description": "Add extra commands to Symfony for easy translations and translation files management. With Yandex Translate API support for suggestions and automatic translation of files.",
   "keywords": [
     "console commands",
     "symfony translations",

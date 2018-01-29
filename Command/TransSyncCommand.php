@@ -49,7 +49,15 @@ class TransSyncCommand extends ContainerAwareCommand
 
             } else {
                 $defaultdata = $common->getArrayFromFile($domainfiles['path'], $domainfiles['format']);
+                if (!$defaultdata) {
+                    $output->writeln('TRANS:SYNC => ERROR : Default locale file "' . $domainfiles['default'] . '"cant´t be opened. Incorrect format?.');
+                    die();
+                }
                 $otherdata = $common->getArrayFromFile($other['path'], $other['format']);
+                if (!$otherdata) {
+                    $output->writeln('TRANS:SYNC => ERROR : File "' . $other['filename'] . '"cant´t be opened. Incorrect format?.');
+                    die();
+                }
                 $output->writeln('TRANS:SYNC => INFO : Comparing ' . $domainfiles['default'] . ' -> ' . $other['filename']);
                 $diff = array_diff_key($defaultdata, $otherdata);
 

@@ -4,6 +4,8 @@ namespace Lucasweb\TranslationsExtraBundle\Command;
 
 use Lucasweb\TranslationsExtraBundle\Utils\CommonUtils;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Helper\Table;
+use Symfony\Component\Console\Helper\TableSeparator;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Console\Input\InputInterface;
@@ -51,84 +53,60 @@ class TransCheckCommand extends ContainerAwareCommand
             $output->writeln('TRANS:CHECK => WARNING : No locales configured except default. Process will only work with default locale translations.');
         }
 
+        $output->writeln('');
+        $table = new Table($output);
+        $table
+            ->setHeaders(array('Locale', 'File', 'Format', 'Messages', 'Status'));
+
         if ($domainfiles['path'] == '') {
-            $output->writeln('TRANS:CHECK => WARNING : Default locale file "' . $domainfiles['default'] . '" required and not found. Run "trans:create ' . $input->getArgument('domain') . '" command to help you solve it.');
+            $domainfiles['default'] = $input->getArgument('domain') . '.' . $domainfiles['locale'] . '.???';;
+            $domainfiles['format'] = "???";
+            $defaultdata = [];
+            $domainfiles['status'] = 'File not found, Run "trans:create ' . $input->getArgument('domain') . '" to solve it!';
+            $rows[] = [$domainfiles['locale'], $domainfiles['default'], $domainfiles['format'], count($defaultdata), $domainfiles['status']];
+
         } else {
             $defaultdata = $common->getArrayFromFile($domainfiles['path'], $domainfiles['format']);
-            $output->writeln('TRANS:CHECK => INFO : Default file ' . $domainfiles['default'] . ' has ' . count($defaultdata) . ' translation messages.');
-
-            $output->writeln('TRANS:CHECK => INFO : Checking "' . $domainfiles['default'] . '" for repeated translations with different ID');
-            $countrepeated = array_count_values($defaultdata);
-            $count = 0;
-            foreach ($countrepeated as $key => $value) {
-                if ($value > 1) {
-                    $count++;
-                } else {
-                    unset($countrepeated[$key]);
-                }
+            if ($defaultdata) {
+                $domainfiles['status'] = 'Ok!';
+                $rows[] = [$domainfiles['locale'], $domainfiles['default'], $domainfiles['format'], count($defaultdata), $domainfiles['status']];
+            } else {
+                $domainfiles['status'] = 'File can´t be opened. Incorrect format?';
+                $rows[] = [$domainfiles['locale'], $domainfiles['default'], $domainfiles['format'], 0, $domainfiles['status']];
             }
-            if ($count >= 1) {
-                $output->writeln('TRANS:CHECK => WARNING : Repeated translations found in "' . $domainfiles['default'] . '" : ');
-                foreach ($countrepeated as $key => $value) {
-                    $output->writeln('TRANS:CHECK => WARNING : Value "' . $key . '" appears ' . $value . ' times in "' . $domainfiles['default'] . '" : ');
-                    $output->writeln('TRANS:CHECK => Ocurrences: ');
-                    foreach ($defaultdata as $k => $v) {
-
-                        if ($key == $v) {
-                            $output->writeln('                  ID="' . $k . '" VALUE="' . $v . '"');
-                        }
-                    }
-                }
-
-            }
-
         }
-
-
         if (isset($domainfiles['others'])) {
             foreach ($domainfiles['others'] as $other) {
 
                 if ($other['path'] == '') {
-                    $output->writeln('TRANS:CHECK => WARNING : File "' . $other['filename'] . '" not found. Run "trans:create ' . $input->getArgument('domain') . '" command to solve it.');
+                    $other['filename'] = $input->getArgument('domain') . '.' . $other['locale'] . '.???';
+                    $other['format'] = "???";
+                    $otherdata = [];
+                    $other['status'] = 'File not found, Run "trans:create ' . $input->getArgument('domain') . '" to solve it!';
                 } else {
                     $otherdata = $common->getArrayFromFile($other['path'], $other['format']);
-                    $output->writeln('TRANS:CHECK => INFO : File ' . $other['filename'] . ' has ' . count($otherdata) . ' translation messages.');
-                }
-
-                if (count($defaultdata) < count($otherdata)) {
-                    $output->writeln('TRANS:CHECK => WARNING : File ' . $other['filename'] . ' has more translations than default. Run "trans:sync ' . $input->getArgument('domain') . '" command to solve it.');
-                } else if (count($defaultdata) > count($otherdata)) {
-                    $output->writeln('TRANS:CHECK => WARNING : File ' . $other['filename'] . ' has less translations than default. Run "trans:sync ' . $input->getArgument('domain') . '" command to solve it.');
-                }
-
-                $output->writeln('TRANS:CHECK => INFO : Checking "' . $other['filename'] . '" for repeated translations with different ID');
-                $countrepeated = array_count_values($otherdata);
-                $count = 0;
-                foreach ($countrepeated as $key => $value) {
-                    if ($value > 1) {
-                        $count++;
-                    } else {
-                        unset($countrepeated[$key]);
-                    }
-                }
-                if ($count >= 1) {
-                    $output->writeln('TRANS:CHECK => WARNING : Repeated translations found in "' . $other['filename'] . '" : ');
-                    foreach ($countrepeated as $key => $value) {
-                        $output->writeln('TRANS:CHECK => WARNING : Value "' . $key . '" appears ' . $value . ' times in "' . $other['filename'] . '" : ');
-                        $output->writeln('TRANS:CHECK => Ocurrences: ');
-                        foreach ($otherdata as $k => $v) {
-
-                            if ($key == $v) {
-                                $output->writeln('                  ID="' . $k . '" VALUE="' . $v . '"');
-                            }
+                    if ($otherdata) {
+                        if (count($defaultdata) == count($otherdata)) {
+                            $other['status'] = 'Ok!';
+                        } else {
+                            $other['status'] = 'Different quantity of messages than default locale, Run "trans:sync ' . $input->getArgument('domain') . '" to solve it!';
                         }
 
+                    } else {
+                        $other['status'] = 'File can´t be opened. Incorrect format?';
+                        $otherdata = [];
                     }
-
                 }
+                $rows[] = new TableSeparator();
+                $rows[] = [$other['locale'], $other['filename'], $other['format'], count($otherdata), $other['status']];
             }
         }
 
-        $output->writeln('TRANS:CHECK => SUCCESS : Check files done!');
+        $table->setRows($rows);
+        $table->render();
+
+        //Process finished
+        $output->writeln('');
+        $output->writeln('TRANS:CHECK => SUCCESS : Check process finished!');
     }
 }

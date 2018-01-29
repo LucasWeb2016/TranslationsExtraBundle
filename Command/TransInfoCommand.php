@@ -54,14 +54,18 @@ class TransInfoCommand extends ContainerAwareCommand
 
         //Proces
         if ($domainfiles['path'] == '') {
-            $output->writeln('TRANS:INFO => ERROR : Default locale file "' . $domainfiles['default'] . '" not found. Run "trans:create ' . $input->getArgument('domain') . '" command to solve it. Process will continue without working in this file.');
+            $output->writeln('TRANS:INFO => WARNING : Default locale file "' . $domainfiles['default'] . '" not found. Run "trans:create ' . $input->getArgument('domain') . '" command to solve it. Process will continue without working in this file.');
         } else {
             $defaultdata = $common->getArrayFromFile($domainfiles['path'], $domainfiles['format']);
-            if (isset($defaultdata[$input->getArgument('id')])) {
-                $output->writeln('TRANS:INFO => INFO : Value of message ID="' . $input->getArgument('id') . '" in file "' . $domainfiles['default'] . '" is "' . $defaultdata[$input->getArgument('id')] . '"');
-
+            if (!$defaultdata) {
+                $output->writeln('TRANS:INFO => WARNING : File "' . $domainfiles['default'] . '" cant´t be opened. Incorrect format?. Process will continue without this file.');
             } else {
-                $output->writeln('TRANS:INFO => INFO : Value of message ID="' . $input->getArgument('id') . '" not found in file "' . $domainfiles['default'] . '"');
+                if (isset($defaultdata[$input->getArgument('id')])) {
+                    $output->writeln('TRANS:INFO => INFO : Value of message ID="' . $input->getArgument('id') . '" in file "' . $domainfiles['default'] . '" is "' . $defaultdata[$input->getArgument('id')] . '"');
+
+                } else {
+                    $output->writeln('TRANS:INFO => INFO : Value of message ID="' . $input->getArgument('id') . '" not found in file "' . $domainfiles['default'] . '"');
+                }
             }
         }
 
@@ -71,11 +75,15 @@ class TransInfoCommand extends ContainerAwareCommand
                     $output->writeln('TRANS:INFO => WARNING : File "' . $other['filename'] . '" not found. Run "trans:create ' . $input->getArgument('domain') . '" command to solve it. Process will continue without working in this file.');
                 } else {
                     $otherdata = $common->getArrayFromFile($other['path'], $other['format']);
-                    if (isset($otherdata[$input->getArgument('id')])) {
-                        $output->writeln('TRANS:INFO => INFO : Value of message ID="' . $input->getArgument('id') . '" in file "' . $other['filename'] . '" is "' . $otherdata[$input->getArgument('id')] . '"');
-
+                    if (!$otherdata) {
+                        $output->writeln('TRANS:INFO => WARNING : File "' . $other['filename'] . '" cant´t be opened. Incorrect format?. Process will continue without this file.');
                     } else {
-                        $output->writeln('TRANS:INFO => INFO : Value of message ID="' . $input->getArgument('id') . '" not found in file "' . $other['filename'] . '"');
+                        if (isset($otherdata[$input->getArgument('id')])) {
+                            $output->writeln('TRANS:INFO => INFO : Value of message ID="' . $input->getArgument('id') . '" in file "' . $other['filename'] . '" is "' . $otherdata[$input->getArgument('id')] . '"');
+
+                        } else {
+                            $output->writeln('TRANS:INFO => INFO : Value of message ID="' . $input->getArgument('id') . '" not found in file "' . $other['filename'] . '"');
+                        }
                     }
                 }
             }

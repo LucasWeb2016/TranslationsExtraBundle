@@ -58,18 +58,23 @@ class TransRemoveCommand extends ContainerAwareCommand
             die();
         } else {
             $defaultdata = $common->getArrayFromFile($domainfiles['path'], $domainfiles['format']);
-            if (!isset($defaultdata[$input->getArgument('id')])) {
-                $output->writeln('TRANS:REMOVE => INFO : ID="' . $input->getArgument('id') . '" not found in file "' . $domainfiles['default'] . '".');
-            } else {
-                $output->writeln('TRANS:REMOVE => INFO : ID="' . $input->getArgument('id') . '" found in default file "' . $domainfiles['default'] . '".');
-                $question = new ConfirmationQuestion('TRANS:REMOVE => WARNING : Translation ID="' . $input->getArgument('id') . '" will be deleted from default file "' . $domainfiles['default'] . '", even if it is being used in the project. Continue? (y/n) : ', false);
+            if (!$defaultdata) {
+                $output->writeln('TRANS:REMOVE => WARNING : Default locale file "' . $domainfiles['default'] . '" cant´t be opened. Incorrect format?. Process will continue without this file.');
 
-                if ($helper->ask($input, $output, $question)) {
-                    unset($defaultdata[$input->getArgument('id')]);
-                    $common->putArrayInFile($domainfiles['path'], $domainfiles['format'], $defaultdata);
-                    $output->writeln('TRANS:REMOVE => SUCCESS : Translation message ID="' . $input->getArgument('id') . '" removed from default file "' . $domainfiles['default'] . '"!');
+            } else {
+                if (!isset($defaultdata[$input->getArgument('id')])) {
+                    $output->writeln('TRANS:REMOVE => INFO : ID="' . $input->getArgument('id') . '" not found in file "' . $domainfiles['default'] . '".');
                 } else {
-                    $output->writeln('TRANS:REMOVE => INFO : Remove ID="' . $input->getArgument('id') . '" from default file "' . $domainfiles['default'] . '" cancelled.');
+                    $output->writeln('TRANS:REMOVE => INFO : ID="' . $input->getArgument('id') . '" found in default file "' . $domainfiles['default'] . '".');
+                    $question = new ConfirmationQuestion('TRANS:REMOVE => WARNING : Translation ID="' . $input->getArgument('id') . '" will be deleted from default file "' . $domainfiles['default'] . '", even if it is being used in the project. Continue? (y/n) : ', false);
+
+                    if ($helper->ask($input, $output, $question)) {
+                        unset($defaultdata[$input->getArgument('id')]);
+                        $common->putArrayInFile($domainfiles['path'], $domainfiles['format'], $defaultdata);
+                        $output->writeln('TRANS:REMOVE => SUCCESS : Translation message ID="' . $input->getArgument('id') . '" removed from default file "' . $domainfiles['default'] . '"!');
+                    } else {
+                        $output->writeln('TRANS:REMOVE => INFO : Remove ID="' . $input->getArgument('id') . '" from default file "' . $domainfiles['default'] . '" cancelled.');
+                    }
                 }
             }
         }
@@ -79,18 +84,22 @@ class TransRemoveCommand extends ContainerAwareCommand
                     $output->writeln('TRANS:REMOVE => WARNING : File "' . $other['filename'] . '" not found. Run "trans:repair ' . $input->getArgument('domain') . '" command to help you solve it. Process will continue without working in this file.');
                 } else {
                     $otherdata = $common->getArrayFromFile($other['path'], $other['format']);
-                    if (!isset($otherdata[$input->getArgument('id')])) {
-                        $output->writeln('TRANS:REMOVE => INFO : ID="' . $input->getArgument('id') . '"not found in file "' . $other['filename'] . '".');
+                    if (!$otherdata) {
+                        $output->writeln('TRANS:REMOVE => WARNING : File "' . $other['filename'] . '" cant´t be opened. Incorrect format?. Process will continue without this file.');
                     } else {
-                        $output->writeln('TRANS:REMOVE => INFO : ID="' . $input->getArgument('id') . '" found in file "' . $other['filename'] . '".');
-                        $question = new ConfirmationQuestion('TRANS:REMOVE => WARNING : Translation ID="' . $input->getArgument('id') . '" will be deleted from file "' . $other['filename'] . '", even if it is being used in the project. Continue? (y/n) : ', false);
-                        if ($helper->ask($input, $output, $question)) {
-                            unset($otherdata[$input->getArgument('id')]);
-                            $common->putArrayInFile($other['path'], $other['format'], $otherdata);
-                            $output->writeln('TRANS:REMOVE => SUCCESS : Translation message ID="' . $input->getArgument('id') . '" removed from file "' . $other['filename'] . '"!');
-
+                        if (!isset($otherdata[$input->getArgument('id')])) {
+                            $output->writeln('TRANS:REMOVE => INFO : ID="' . $input->getArgument('id') . '"not found in file "' . $other['filename'] . '".');
                         } else {
-                            $output->writeln('TRANS:REMOVE => INFO : Remove ID="' . $input->getArgument('id') . '" from file "' . $other['filename'] . '" cancelled.');
+                            $output->writeln('TRANS:REMOVE => INFO : ID="' . $input->getArgument('id') . '" found in file "' . $other['filename'] . '".');
+                            $question = new ConfirmationQuestion('TRANS:REMOVE => WARNING : Translation ID="' . $input->getArgument('id') . '" will be deleted from file "' . $other['filename'] . '", even if it is being used in the project. Continue? (y/n) : ', false);
+                            if ($helper->ask($input, $output, $question)) {
+                                unset($otherdata[$input->getArgument('id')]);
+                                $common->putArrayInFile($other['path'], $other['format'], $otherdata);
+                                $output->writeln('TRANS:REMOVE => SUCCESS : Translation message ID="' . $input->getArgument('id') . '" removed from file "' . $other['filename'] . '"!');
+
+                            } else {
+                                $output->writeln('TRANS:REMOVE => INFO : Remove ID="' . $input->getArgument('id') . '" from file "' . $other['filename'] . '" cancelled.');
+                            }
                         }
                     }
                 }

@@ -39,7 +39,6 @@ class TransImportCommand extends ContainerAwareCommand
         $config = $common->getConfig($this->getContainer());
         $file_extensions = $common->getFileExtensions();
         $domainfiles = $common->getFiles($this->getContainer(), $input->getArgument('domain'));
-        //var_dump();die();
 
         //Previous checks
         if (!$filesystem->exists($this->getContainer()->get('kernel')->getRootDir() . '/../vendor/' . strtolower($input->getArgument('folder')) . '/Resources/Translations')) {
@@ -93,8 +92,12 @@ class TransImportCommand extends ContainerAwareCommand
 
                         if ($replytarget == 2) {
                             $dataoriginal = $common->getArrayFromFile($file['path'], $file['format']);
-                            $common->putArrayInFile($found['path'], $found['format'], $dataoriginal);
-                            $output->writeln('TRANS:IMPORT => SUCCESS : Imported !.');
+                            if (!$dataoriginal) {
+                                $output->writeln('TRANS:IMPORT => ERROR : File "' . $file['filename'] . '" cant´t be opened. Incorrect format?. Import aborted.');
+                            } else {
+                                $common->putArrayInFile($found['path'], $found['format'], $dataoriginal);
+                                $output->writeln('TRANS:IMPORT => SUCCESS : Imported !.');
+                            }
 
                         } else {
                             $output->writeln('TRANS:IMPORT => Import of file "' . $input->getArgument('domain') . '.' . $file['locale'] . '.' . $file_extensions[$config['default_format']][0] . '" cancelled.');
@@ -102,10 +105,14 @@ class TransImportCommand extends ContainerAwareCommand
                         }
                     } else {
                         $dataoriginal = $common->getArrayFromFile($file['path'], $file['format']);
-                        $path = $config['main_folder'] . '/' . $input->getArgument('domain') . '.' . $file['locale'] . '.' . $file_extensions[$config['default_format']][0];
-                        $common->putArrayInFile($path, $config['default_format'], $dataoriginal);
-                        $output->writeln('TRANS:IMPORT => SUCCESS : File "' . $input->getArgument('domain') . '.' . $file['locale'] . '.' . $file_extensions[$config['default_format']][0] . '" created with imported data.');
+                        if (!$dataoriginal) {
+                            $output->writeln('TRANS:IMPORT => ERROR : File "' . $file['filename'] . '" cant´t be opened. Incorrect format?. Import aborted.');
+                        } else {
+                            $path = $config['main_folder'] . '/' . $input->getArgument('domain') . '.' . $file['locale'] . '.' . $file_extensions[$config['default_format']][0];
+                            $common->putArrayInFile($path, $config['default_format'], $dataoriginal);
+                            $output->writeln('TRANS:IMPORT => SUCCESS : File "' . $input->getArgument('domain') . '.' . $file['locale'] . '.' . $file_extensions[$config['default_format']][0] . '" created with imported data.');
 
+                        }
                     }
 
 

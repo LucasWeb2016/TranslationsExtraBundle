@@ -75,12 +75,12 @@ class TransCreateCommand extends ContainerAwareCommand
                         $question = null;
                         if ($domainfiles['path'] != '') {
                             if ($config['yandex_api_key'] != '') {
-                                $question = new Question('TRANS:CREATE => QUESTION : File "' . $domfile['filename'] . '" not found. Create new empty file(1), Create default clon(2), Yandex Translate(3) or Skip(0)', 1);
+                                $question = new Question('TRANS:CREATE => QUESTION : File "' . $domfile['filename'] . '" not found. Create new empty file(1), Create default clon(2), Yandex Translate(3) or Skip(0) : ', 1);
                             } else {
-                                $question = new Question('TRANS:CREATE => QUESTION : File "' . $domfile['filename'] . '" not found. Create new empty file(1), Create default clon(2) or Skip(0)', 1);
+                                $question = new Question('TRANS:CREATE => QUESTION : File "' . $domfile['filename'] . '" not found. Create new empty file(1), Create default clon(2) or Skip(0) : ', 1);
                             }
                         } else {
-                            $question = new Question('TRANS:CREATE => QUESTION : File "' . $domfile['filename'] . '" not found. Create new empty file(1) or Skip(0)', 1);
+                            $question = new Question('TRANS:CREATE => QUESTION : File "' . $domfile['filename'] . '" not found. Create new empty file(1) or Skip(0) : ', 1);
 
                         }
                         $replytarget = $helper->ask($input, $output, $question);
@@ -91,21 +91,28 @@ class TransCreateCommand extends ContainerAwareCommand
                     $path = $this->getContainer()->getParameter('translationsextra.main_folder') . '/' . $input->getArgument('domain') . '.' . $domfile['locale'] . '.' . $file_extensions[$config['default_format']][0];
                     if ($a == 1) {
                         $common->putArrayInFile($path, $config['default_format'], []);
-                        $output->writeln('TRANS:CREATE => SUCCESS : File "' . $domfile['filename'] . '" created!');
+                        $output->writeln('TRANS:CREATE => SUCCESS : Empty file "' . $domfile['filename'] . '" created!');
 
                     } else if ($a == 2) {
                         $clonedata = $common->getArrayFromFile($domainfiles['path'], $domainfiles['format']);
-                        $common->putArrayInFile($path, $config['default_format'], $clonedata);
-                        $output->writeln('TRANS:CREATE => SUCCESS : File "' . $domfile['filename'] . '" cloned from default file created!');
-                    } else if ($a == 3) {
-                        $clonedata = $common->getArrayFromFile($domainfiles['path'], $domainfiles['format']);
-
-                        foreach ($clonedata as $key => $value) {
-                            $clonedata[$key] = $common->YandexTrans($value, $domainfiles['locale'], $domfile['locale'], $config, $output);
+                        if (!$clonedata) {
+                            $output->writeln('TRANS:CREATE => ERROR : File "' . $domainfiles['default'] . '" cant´t be opened. Incorrect format?.');
+                        } else {
+                            $common->putArrayInFile($path, $config['default_format'], $clonedata);
+                            $output->writeln('TRANS:CREATE => SUCCESS : File "' . $domfile['filename'] . '" cloned from default file created!');
                         }
 
-                        $common->putArrayInFile($path, $config['default_format'], $clonedata);
-                        $output->writeln('TRANS:CREATE => SUCCESS : File "' . $domfile['filename'] . '" cloned from default file created!');
+                    } else if ($a == 3) {
+                        $clonedata = $common->getArrayFromFile($domainfiles['path'], $domainfiles['format']);
+                        if (!$clonedata) {
+                            $output->writeln('TRANS:CREATE => ERROR : File "' . $domainfiles['default'] . '" cant´t be opened. Incorrect format?.');
+                        } else {
+                            foreach ($clonedata as $key => $value) {
+                                $clonedata[$key] = $common->YandexTrans($value, $domainfiles['locale'], $domfile['locale'], $config, $output);
+                            }
+                            $common->putArrayInFile($path, $config['default_format'], $clonedata);
+                            $output->writeln('TRANS:CREATE => SUCCESS : File "' . $domfile['filename'] . '" with Yandex Translation from default file create!');
+                        }
 
                     }
                 } else {
