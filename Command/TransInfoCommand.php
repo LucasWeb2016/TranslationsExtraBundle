@@ -4,6 +4,8 @@ namespace Lucasweb\TranslationsExtraBundle\Command;
 
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Lucasweb\TranslationsExtraBundle\Utils\CommonUtils;
+use Symfony\Component\Console\Helper\Table;
+use Symfony\Component\Console\Helper\TableSeparator;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Console\Input\InputInterface;
@@ -53,42 +55,51 @@ class TransInfoCommand extends ContainerAwareCommand
         }
 
         //Proces
+        $output->writeln('');
+        $table = new Table($output);
+        $table
+            ->setHeaders(array('Locale', 'File', 'ID', 'Value'));
         if ($domainfiles['path'] == '') {
-            $output->writeln('TRANS:INFO => WARNING : Default locale file "' . $domainfiles['default'] . '" not found. Run "trans:create ' . $input->getArgument('domain') . '" command to solve it. Process will continue without working in this file.');
+            $rows[] = [$domainfiles['locale'], 'Not found!', '', ''];
+
         } else {
             $defaultdata = $common->getArrayFromFile($domainfiles['path'], $domainfiles['format']);
             if (!$defaultdata) {
-                $output->writeln('TRANS:INFO => WARNING : File "' . $domainfiles['default'] . '" cant´t be opened. Incorrect format?. Process will continue without this file.');
+                $rows[] = [$domainfiles['locale'], 'Invalid format?', '', ''];
             } else {
                 if (isset($defaultdata[$input->getArgument('id')])) {
-                    $output->writeln('TRANS:INFO => INFO : Value of message ID="' . $input->getArgument('id') . '" in file "' . $domainfiles['default'] . '" is "' . $defaultdata[$input->getArgument('id')] . '"');
-
+                    $rows[] = [$domainfiles['locale'], $domainfiles['default'], $input->getArgument('id'), $defaultdata[$input->getArgument('id')]];
                 } else {
-                    $output->writeln('TRANS:INFO => INFO : Value of message ID="' . $input->getArgument('id') . '" not found in file "' . $domainfiles['default'] . '"');
+                    $rows[] = [$domainfiles['locale'], $domainfiles['default'], $input->getArgument('id'), 'Not found!!'];
                 }
             }
         }
 
         if (isset($domainfiles['others'])) {
             foreach ($domainfiles['others'] as $other) {
+                $rows[] = new TableSeparator();
                 if ($other['path'] == '') {
-                    $output->writeln('TRANS:INFO => WARNING : File "' . $other['filename'] . '" not found. Run "trans:create ' . $input->getArgument('domain') . '" command to solve it. Process will continue without working in this file.');
+                    $rows[] = [$other['locale'], 'Not found!', '', ''];
                 } else {
                     $otherdata = $common->getArrayFromFile($other['path'], $other['format']);
                     if (!$otherdata) {
-                        $output->writeln('TRANS:INFO => WARNING : File "' . $other['filename'] . '" cant´t be opened. Incorrect format?. Process will continue without this file.');
+                        $rows[] = [$other['locale'], 'Invalid format?', '', ''];
                     } else {
                         if (isset($otherdata[$input->getArgument('id')])) {
-                            $output->writeln('TRANS:INFO => INFO : Value of message ID="' . $input->getArgument('id') . '" in file "' . $other['filename'] . '" is "' . $otherdata[$input->getArgument('id')] . '"');
-
+                            $rows[] = [$other['locale'], $other['filename'], $input->getArgument('id'), $otherdata[$input->getArgument('id')]];
                         } else {
-                            $output->writeln('TRANS:INFO => INFO : Value of message ID="' . $input->getArgument('id') . '" not found in file "' . $other['filename'] . '"');
+                            $rows[] = [$other['locale'], $other['filename'], 'Not found!'];
+
                         }
                     }
                 }
             }
         }
 
+        $table->setRows($rows);
+        $table->render();
+
+        $output->writeln('');
         $output->writeln('TRANS:INFO => SUCCESS : Translation message info shown!');
 
     }

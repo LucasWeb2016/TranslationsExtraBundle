@@ -86,11 +86,16 @@ class TransCheckCommand extends ContainerAwareCommand
                 } else {
                     $otherdata = $common->getArrayFromFile($other['path'], $other['format']);
                     if ($otherdata) {
-                        if (count($defaultdata) == count($otherdata)) {
-                            $other['status'] = 'Ok!';
+                        if($defaultdata){
+                            if (count($defaultdata) == count($otherdata)) {
+                                $other['status'] = 'Ok!';
+                            } else {
+                                $other['status'] = 'Different quantity of messages than default locale, Run "trans:sync ' . $input->getArgument('domain') . '" to solve it!';
+                            }
                         } else {
-                            $other['status'] = 'Different quantity of messages than default locale, Run "trans:sync ' . $input->getArgument('domain') . '" to solve it!';
+                            $other['status'] = 'Ok!';
                         }
+
 
                     } else {
                         $other['status'] = 'File can´t be opened. Incorrect format?';
