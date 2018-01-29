@@ -1,6 +1,6 @@
 ﻿# Lucasweb\TranslationsExtraBundle
 
-[![Symfony](https://img.shields.io/badge/Symfony-4-green.svg)]() [![License](https://img.shields.io/badge/License-MIT-orange.svg)]() [![Stable](https://img.shields.io/badge/Stable-1.0-blue.svg)]() [![Stable](https://img.shields.io/badge/Unstable-dev-master-red.svg)]()
+[![Symfony](https://img.shields.io/badge/Symfony-4-green.svg)]() [![License](https://img.shields.io/badge/License-MIT-orange.svg)]() [![Stable](https://img.shields.io/badge/Stable-1.0-blue.svg)]() [![Stable](https://img.shields.io/badge/Unstable-devmaster-red.svg)]()
 
 [![knpbundles.com](http://knpbundles.com/LucasWeb2016/TranslationsExtraBundle/badge-short)](http://knpbundles.com/LucasWeb2016/TranslationsExtraBundle)
 
