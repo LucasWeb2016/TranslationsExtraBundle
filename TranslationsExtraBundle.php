@@ -11,6 +11,7 @@ use Lucasweb\TranslationsExtraBundle\Command\TransInfoCommand;
 use Lucasweb\TranslationsExtraBundle\Command\TranslationsExtraCommand;
 use Lucasweb\TranslationsExtraBundle\Command\TransRemoveCommand;
 use Lucasweb\TranslationsExtraBundle\Command\TransRepairCommand;
+use Lucasweb\TranslationsExtraBundle\Command\TransSearchCommand;
 use Lucasweb\TranslationsExtraBundle\Command\TransSyncCommand;
 use Symfony\Component\Console\Application;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
@@ -32,5 +33,6 @@ class TranslationsExtraBundle extends Bundle
         $application->add(new TransImportCommand());
         $application->add(new TransSyncCommand());
         $application->add(new TransCreateCommand());
+        $application->add(new TransSearchCommand());
     }
 }

@@ -21,7 +21,7 @@ class TransSyncCommand extends ContainerAwareCommand
         $this
             ->setName('trans:sync')
             ->setDescription('Sync all translation files of a domain.')
-            ->setHelp('Documentation available at https://github.com/LucasWeb2016/symfony-TranslationExtraBundle')
+            ->setHelp('Documentation available at https://github.com/LucasWeb2016/TranslationsExtraBundle')
             ->addArgument('domain', InputArgument::REQUIRED, 'Translation domain name (Ej."messages"). Required.');
     }
 

@@ -23,7 +23,7 @@ class TransCreateCommand extends ContainerAwareCommand
         $this
             ->setName('trans:create')
             ->setDescription('Create all non-existent translation files of a domain.')
-            ->setHelp('Documentation available at https://github.com/LucasWeb2016/symfony-TranslationExtraBundle')
+            ->setHelp('Documentation available at https://github.com/LucasWeb2016/TranslationsExtraBundle')
             ->addArgument('domain', InputArgument::REQUIRED, 'Translation domain name (Ej."messages"). Required.');
     }
 

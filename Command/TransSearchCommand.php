@@ -11,7 +11,7 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class TransInfoCommand extends ContainerAwareCommand
+class TransSearchCommand extends ContainerAwareCommand
 {
     public function __construct()
     {
@@ -21,16 +21,16 @@ class TransInfoCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this
-            ->setName('trans:info')
-            ->setDescription('Get translations messages info from your catalogue files.')
+            ->setName('trans:search')
+            ->setDescription('Search for a string in all translation files of a domain.')
             ->setHelp('Documentation available at https://github.com/LucasWeb2016/TranslationsExtraBundle')
-            ->addArgument('id', InputArgument::REQUIRED, 'Translation Message ID (Ej."label.home").')
+            ->addArgument('searchterm', InputArgument::REQUIRED, 'Translation Message ID (Ej."label.home").')
             ->addArgument('domain', InputArgument::REQUIRED, 'Translation domain name (Ej."messages"). Required.');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $output->writeln('TRANS:INFO => INFO : Starting Info Process ...');
+        $output->writeln('TRANS:SEARCH => INFO : Starting Search Process ...');
         $filesystem = new Filesystem();
 
         // Get Configurations and Files to process
@@ -45,18 +45,21 @@ class TransInfoCommand extends ContainerAwareCommand
 
         //Previous checks
         if (!in_array($input->getArgument('domain'), $config['domains'])) {
-            $output->writeln('TRANS:INFO => ERROR : "' . $input->getArgument('domain') . '" is not one of the configured domains.');
+            $output->writeln('TRANS:SEARCH => ERROR : "' . $input->getArgument('domain') . '" is not one of the configured domains.');
             die();
         } else if (!$filesystem->exists($config['main_folder'])) {
-            $output->writeln('TRANS:INFO => ERROR : Main folder not found. Bad configuration?');
+            $output->writeln('TRANS:SEARCH => ERROR : Main folder not found. Bad configuration?');
             die();
         } else if (count($config['other_locales']) == 0) {
-            $output->writeln('TRANS:INFO => WARNING : No locales configured except default. Process will only work with default locale translations.');
+            $output->writeln('TRANS:SEARCH => WARNING : No locales configured except default. Process will only work with default locale translations.');
         }
+
+
 
         //Proces
         $output->writeln('');
         $table = new Table($output);
+        $rows=[];
         $table
             ->setHeaders(array('Locale', 'File', 'ID', 'Value'));
         if ($domainfiles['path'] == '') {
@@ -64,34 +67,42 @@ class TransInfoCommand extends ContainerAwareCommand
 
         } else {
             $defaultdata = $common->getArrayFromFile($domainfiles['path'], $domainfiles['format']);
-            if (!is_array($defaultdata)) {
-                $rows[] = [$domainfiles['locale'], 'Invalid format?', '', ''];
-            } else {
-                if (isset($defaultdata[$input->getArgument('id')])) {
-                    $rows[] = [$domainfiles['locale'], $domainfiles['default'], $input->getArgument('id'), $defaultdata[$input->getArgument('id')]];
-                } else {
-                    $rows[] = [$domainfiles['locale'], $domainfiles['default'], $input->getArgument('id'), 'Not found!!'];
+            if (is_array($defaultdata)) {
+                foreach($defaultdata as $key => $value)
+                {
+                    $posvalue = strripos($value,$input->getArgument('searchterm'));
+                    $poskey=strripos((string)$key,$input->getArgument('searchterm'));
+                    if ($posvalue !== false || $poskey !== false) {
+                        $rows[] = [$domainfiles['locale'], $domainfiles['default'], $key, $value];
+                    }
+
                 }
             }
         }
 
         if (isset($domainfiles['others'])) {
             foreach ($domainfiles['others'] as $other) {
-                $rows[] = new TableSeparator();
-                if ($other['path'] == '') {
-                    $rows[] = [$other['locale'], 'Not found!', '', ''];
-                } else {
+                if ($other['path'] != '') {
                     $otherdata = $common->getArrayFromFile($other['path'], $other['format']);
-                    if (!is_array($otherdata)) {
-                        $rows[] = [$other['locale'], 'Invalid format?', '', ''];
-                    } else {
-                        if (isset($otherdata[$input->getArgument('id')])) {
-                            $rows[] = [$other['locale'], $other['filename'], $input->getArgument('id'), $otherdata[$input->getArgument('id')]];
-                        } else {
-                            $rows[] = [$other['locale'], $other['filename'], 'Not found!'];
+                    if (is_array($otherdata)) {
+                        foreach($otherdata as $key => $value)
+                        {
+                            $pos = strripos($value,$input->getArgument('searchterm'));
+                            if ($pos !== false) {
+                                $rows[] = [$other['locale'], $other['filename'], $key, $value];
+
+                            }
+
+                            $posvalue = strripos($value,$input->getArgument('searchterm'));
+                            $poskey=strripos((string)$key,$input->getArgument('searchterm'));
+                            if ($posvalue !== false || $poskey !== false) {
+                                $rows[] = [$other['locale'], $other['filename'], $key, $value];
+                            }
 
                         }
+
                     }
+
                 }
             }
         }
@@ -100,7 +111,6 @@ class TransInfoCommand extends ContainerAwareCommand
         $table->render();
 
         $output->writeln('');
-        $output->writeln('TRANS:INFO => SUCCESS : Translation message info shown!');
 
     }
 

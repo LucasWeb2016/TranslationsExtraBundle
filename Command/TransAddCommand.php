@@ -22,7 +22,7 @@ class TransAddCommand extends ContainerAwareCommand
         $this
             ->setName('trans:add')
             ->setDescription('Add new translation messages to your translations files.')
-            ->setHelp('Documentation available at https://github.com/LucasWeb2016/symfony-TranslationExtraBundle')
+            ->setHelp('Documentation available at https://github.com/LucasWeb2016/TranslationsExtraBundle')
             ->addArgument('domain', InputArgument::REQUIRED, 'Translation domain name (Ej."messages"). Required.');
     }
 

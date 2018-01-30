@@ -24,7 +24,7 @@ class TransImportCommand extends ContainerAwareCommand
         $this
             ->setName('trans:import')
             ->setDescription('Import translation catalogues from Bundles files to main folder. This commands search for translation files in a folder, and import them to main directory, where this bundle can manage them.')
-            ->setHelp('Documentation available at https://github.com/LucasWeb2016/symfony-TranslationExtraBundle')
+            ->setHelp('Documentation available at https://github.com/LucasWeb2016/TranslationsExtraBundle')
             ->addArgument('folder', InputArgument::REQUIRED, 'Folder that stores Bundle translations files.(Ej. c:/xampp/htdocs/symfonyproject/vendor/')
             ->addArgument('domain', InputArgument::REQUIRED, 'Translation domain name (Ej."messages"). Required.');
     }

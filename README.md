@@ -6,7 +6,7 @@
 
 **Bundle with extra developer tools for Symfony Framework**
 
-This Bundle adds extra commands to symfony for easy managing translations from translation files. With Yandex Translate API support for suggestions and automatic translation of files.
+This Bundle adds extra commands to Symfony for easy managing translations. With Yandex Translate API support for automatic translations. 
 
  - Add a new translation message
  - Edit a translation message
@@ -19,13 +19,15 @@ This Bundle adds extra commands to symfony for easy managing translations from t
  - Yandex Translate API integrated
  
 ## Why create this Bundle?
- Honestly, I hate having to change tab when I need to create a new message while I'm programming. 
+ Honestly, I hate having to change tab when I need to create a new message while I'm working on a Twig template or a controller. 
+  
+  The first idea was to create a command that would create new messages in a simple way, but I needed other functions, so I added them.
+  
+  I am currently improving the bundle and expanding functionalities every day.
  
- The first idea was to create a command that would create new messages in a simple way, but I needed other functions, so I added them.
- 
- I am currently improving the bundle and expanding functionalities, since I have many ideas that can be very useful that I will implement as I have free time!
- 
- I hope you find it useful!
+ If you found a bug, please [create an issue](https://github.com/LucasWeb2016/TranslationsExtraBundle/issues) !!
+  
+  I hope you find it useful!
  
 # Requeriments
  - Symfony >3.4 (Not tested in previous versions)
@@ -37,7 +39,7 @@ This Bundle adds extra commands to symfony for easy managing translations from t
     composer require lucasweb/translations
 
 ## Configuration
-This Bundle only needs a few fields in Yaml configuration files to start working:
+This Bundle only need this config to start working:
 
     translations_extra:
 	    default_format: 'xml' 
@@ -57,7 +59,7 @@ This Bundle only needs a few fields in Yaml configuration files to start working
 # How to use this bundle
 
 ## Add a new translation message
-This command adds a new message to all the locales of a domain.
+This command adds a new message to all the locales of a domain if file exists.
      
      php bin/console trans:add domainname
 
@@ -73,11 +75,30 @@ This command adds a new message to all the locales of a domain.
     TRANS:ADD => QUESTION : Please, enter value for ID="label.name" in file "messages.fr.xliff" (Yandex Translation: Nom ) : Nom
     TRANS:ADD => SUCCESS : Translation message created!
 
+## Search 
+Search for a string in all the translation files of a domain.
+     
+     php bin/console trans:search "searchterm" domainname
+
+**Example**
+
+    php bin/console trans:search "Nombre" messages
+    
+    TRANS:SEARCH => INFO : Starting Search Process ...
+    
+    +--------+-------------------+------------------+-------------------+
+    | Locale | File              | ID               | Value             |
+    +--------+-------------------+------------------+-------------------+
+    | es     | messages.es.xliff | label.name       | Nombre            |
+    | es     | messages.es.xliff | profile.username | Nombre de usuario |
+    +--------+-------------------+------------------+-------------------+
+
+
 ## Edit a translation message
-This command edits a message of all the local files of a domain, if they exist.
+This command edits a ID in all the locales of a domain if file exists.
 
 
-     php bin/console trans:edit messageID domainname
+     php bin/console trans:edit ID domainname
 
 **Example**
 
@@ -94,9 +115,9 @@ This command edits a message of all the local files of a domain, if they exist.
 
 
 ## Remove a translation message
-This commands removes a messageID from all locale files of a domain, even if it's being used in the project.
+This commands removes an ID from all the locales of a domain if file exists, even if it's being used in the project.
 
-     php bin/console trans:edit messageID domainname
+     php bin/console trans:edit ID domainname
 
 **Example**
 
@@ -114,18 +135,28 @@ This commands removes a messageID from all locale files of a domain, even if it'
     TRANS:REMOVE => SUCCESS : Translation message ID="label.name" removed from file "messages.fr.xliff"!
 
 ## Get info from a translation message
-This command shows all locale translations of a message ID
+This command shows all locale translations of a ID
 
-     php bin/console trans:info messageID domainname
+     php bin/console trans:info ID domainname
 
 **Example**
 
-    php bin/console trans:remove label.name messages
+    php bin/console trans:info label.name messages
     
     TRANS:INFO => INFO : Starting Info Process ...
-    TRANS:INFO => INFO : Value of message ID="label.name" in file "messages.es.xliff" is "Nombre"
-    TRANS:INFO => INFO : Value of message ID="label.name" in file "messages.en.xliff" is "Name"
+    
+    +--------+-------------------+------------+--------+
+    | Locale | File              | ID         | Value  |
+    +--------+-------------------+------------+--------+
+    | es     | messages.es.xliff | label.name | Nombre |
+    +--------+-------------------+------------+--------+
+    | en     | messages.en.yml   | label.name | Name   |
+    +--------+-------------------+------------+--------+
+    | fr     | messages.fr.xliff | Not found! |        |
+    +--------+-------------------+------------+--------+
+    
     TRANS:INFO => SUCCESS : Translation message info shown!
+
 
 ## Check translations files 
 
@@ -150,8 +181,6 @@ Checks locale files supposed to exist for a domain, and report problems.
     +--------+-------------------+--------+----------+--------------------------------------------------------------------------------------------+
     
     TRANS:CHECK => SUCCESS : Check process finished!
-
-
 
 
 ## Sync translations files
@@ -196,12 +225,18 @@ This command checks the existence of all the files that must exist according to 
     
     TRANS:CREATE => INFO : Starting Create Process ...
     TRANS:CREATE => INFO : Default File "messages.es.xliff" exists!
-    TRANS:CREATE => INFO : File "messages.en.xliff" exists!
-    TRANS:CREATE => QUESTION : File "messages.fr.xliff" not found. Create new empty file(1), Create default clon(2), Yandex Translate(3) or Skip(0) : 3
-    TRANS:CREATE => SUCCESS : File "messages.fr.xliff" with Yandex Translation from default file create!
+    TRANS:CREATE => QUESTION : File for domain "messages" and locale "en" not found!
+      [0] Skip
+      [1] Create new empty file
+      [2] Create a clon of default file
+      [3] Create a clon of default file and translate it with Yandex Translate API
+     > 3
+    TRANS:CREATE => SUCCESS : File "messages.en.xliff" with Yandex Translation from default file create!
+    TRANS:CREATE => INFO : File "messages.fr.xliff" exists!
+
     
 ## Import translations files
-In Symfony you can override translation messages of a bundle in main folder. This commands checks a path or a composer installed package for translations files for locales ands domains configured, an imports them to main folder, where you can easily modify them. 
+In Symfony you can override translation messages from bundles in main folder. This commands checks a path or a composer installed package for translations files for locales in a domain, and imports them to main folder, where you can easily modify them. 
 
      php bin/console trans:import bundle/package domainname 
 
@@ -228,6 +263,9 @@ In this example, the command imports Vich Uploader Translation files to our main
 You can also import files from any folder. The following command would do the same as the previous example:
    
     php bin/console trans:import C:\xampp\htdocs\symfny4\vendor\vich\uploader-bundle\Resources\Translations VichUploaderBundle
+# License
+This bundle is under the MIT license. See the complete license in the bundle.
 
-
+# Reporting an issue or a feature request
+Issues and feature requests are tracked in the Github issue tracker.
 

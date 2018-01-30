@@ -22,7 +22,7 @@ class TransEditCommand extends ContainerAwareCommand
         $this
             ->setName('trans:edit')
             ->setDescription('Edit translations messages from your catalogue files.')
-            ->setHelp('Documentation available at https://github.com/LucasWeb2016/symfony-TranslationExtraBundle')
+            ->setHelp('Documentation available at https://github.com/LucasWeb2016/TranslationsExtraBundle')
             ->addArgument('id', InputArgument::REQUIRED, 'Translation Message ID (Ej."label.home").')
             ->addArgument('domain', InputArgument::REQUIRED, 'Translation domain name (Ej."messages"). Required.');
     }
