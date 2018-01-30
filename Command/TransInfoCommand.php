@@ -64,7 +64,7 @@ class TransInfoCommand extends ContainerAwareCommand
 
         } else {
             $defaultdata = $common->getArrayFromFile($domainfiles['path'], $domainfiles['format']);
-            if (!$defaultdata) {
+            if (!is_array($defaultdata)) {
                 $rows[] = [$domainfiles['locale'], 'Invalid format?', '', ''];
             } else {
                 if (isset($defaultdata[$input->getArgument('id')])) {
@@ -82,7 +82,7 @@ class TransInfoCommand extends ContainerAwareCommand
                     $rows[] = [$other['locale'], 'Not found!', '', ''];
                 } else {
                     $otherdata = $common->getArrayFromFile($other['path'], $other['format']);
-                    if (!$otherdata) {
+                    if (!is_array($otherdata)) {
                         $rows[] = [$other['locale'], 'Invalid format?', '', ''];
                     } else {
                         if (isset($otherdata[$input->getArgument('id')])) {

@@ -56,7 +56,7 @@ class TransAddCommand extends ContainerAwareCommand
         } else {
             $defaultdata = $common->getArrayFromFile($domainfiles['path'], $domainfiles['format']);
             $replytarget = null;
-            if (!$defaultdata) {
+            if (!is_array($defaultdata)) {
                 $output->writeln('TRANS:ADD => ERROR : Default locale file "' . $domainfiles['default'] . '" cant´t be opened. Incorrect format?. Process can´t continue without this file.');
                 die();
             } else {
@@ -94,7 +94,7 @@ class TransAddCommand extends ContainerAwareCommand
                     $output->writeln('TRANS:ADD => WARNING : File "' . $other['filename'] . '" not found. Run "trans:create ' . $input->getArgument('domain') . '" command to help you solve it. Process will continue without working in this file.');
                 } else {
                     $otherdata = $common->getArrayFromFile($other['path'], $other['format']);
-                    if (!$otherdata) {
+                    if (!is_array($otherdata)) {
                         $output->writeln('TRANS:ADD => WARNING : File "' . $other['filename'] . '" cant´t be opened. Incorrect format?. Process will continue without this file.');
                     } else {
                         if (isset($otherdata[$replytarget])) {

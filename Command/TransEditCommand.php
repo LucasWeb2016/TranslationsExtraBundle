@@ -54,7 +54,7 @@ class TransEditCommand extends ContainerAwareCommand
             $output->writeln('TRANS:EDIT => ERROR : Default locale file "' . $domainfiles['default'] . '" not found. Run "trans:create ' . $input->getArgument('domain') . '" command to solve it. Process will continue without working in this file.');
         } else {
             $defaultdata = $common->getArrayFromFile($domainfiles['path'], $domainfiles['format']);
-            if (!$defaultdata) {
+            if (!is_array($defaultdata)) {
                 $output->writeln('TRANS:EDIT => WARNING : Default locale file "' . $domainfiles['default'] . '" cant´t be opened. Incorrect format?. Process will continue without working in this file.');
             } else {
                 if (!isset($defaultdata[$input->getArgument('id')])) {
@@ -81,7 +81,7 @@ class TransEditCommand extends ContainerAwareCommand
                     $output->writeln('TRANS:EDIT => WARNING : File "' . $other['filename'] . '" not found. Run "trans:create ' . $input->getArgument('domain') . '" command to solve it. Process will continue without working in this file.');
                 } else {
                     $otherdata = $common->getArrayFromFile($other['path'], $other['format']);
-                    if (!$otherdata) {
+                    if (!is_array($otherdata)) {
                         $output->writeln('TRANS:EDIT => WARNING : File "' . $other['filename'] . '" cant´t be opened. Incorrect format?. Process will continue without working in this file.');
                     } else {
                         if (!isset($otherdata[$input->getArgument('id')])) {

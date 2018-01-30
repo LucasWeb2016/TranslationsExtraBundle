@@ -7,6 +7,7 @@ use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -70,22 +71,36 @@ class TransCreateCommand extends ContainerAwareCommand
         if (isset($domainfiles['others'])) {
             foreach ($domainfiles['others'] as $domfile) {
                 if (!$filesystem->exists($domfile['path'])) {
-                    $a = 0;
-                    while ($a <= 0) {
+                    $a = -1;
+                    while ($a <= -1) {
                         $question = null;
                         if ($domainfiles['path'] != '') {
                             if ($config['yandex_api_key'] != '') {
-                                $question = new Question('TRANS:CREATE => QUESTION : File "' . $domfile['filename'] . '" not found. Create new empty file(1), Create default clon(2), Yandex Translate(3) or Skip(0) : ', 1);
+                                $question = new ChoiceQuestion(
+                                    'TRANS:CREATE => QUESTION : File for domain "' . $input->getArgument('domain') . '" and locale "' . $domfile['locale'] . '" not found!',
+                                    array('Skip', 'Create new empty file', 'Create a clon of default file', 'Create a clon of default file and translate it with Yandex Translate API'),
+                                    0
+                                );
                             } else {
-                                $question = new Question('TRANS:CREATE => QUESTION : File "' . $domfile['filename'] . '" not found. Create new empty file(1), Create default clon(2) or Skip(0) : ', 1);
+                                $question = new ChoiceQuestion(
+                                    'TRANS:CREATE => QUESTION : File for domain "' . $input->getArgument('domain') . '" and locale "' . $domfile['locale'] . '" not found!',
+                                    array('Skip', 'Create new empty file', 'Create a clon of default file'),
+                                    0
+                                );
                             }
                         } else {
-                            $question = new Question('TRANS:CREATE => QUESTION : File "' . $domfile['filename'] . '" not found. Create new empty file(1) or Skip(0) : ', 1);
-
+                            $question = new ChoiceQuestion(
+                                'TRANS:CREATE => QUESTION : File for domain "' . $input->getArgument('domain') . '" and locale "' . $domfile['locale'] . '" not found!',
+                                array('Skip', 'Create new empty file'),
+                                0
+                            );
                         }
+                        $question->setErrorMessage('Option %s is invalid.');
+                        $answers=array('Skip', 'Create new empty file', 'Create a clon of default file', 'Create a clon of default file and translate it with Yandex Translate API');
                         $replytarget = $helper->ask($input, $output, $question);
-                        if ($replytarget >= 0 && $replytarget <= 3) {
-                            $a = $replytarget;
+                        $answer=array_search($replytarget,$answers);
+                        if ($answer >= 0 && $answer <= 3) {
+                            $a = $answer;
                         }
                     }
                     $path = $this->getContainer()->getParameter('translationsextra.main_folder') . '/' . $input->getArgument('domain') . '.' . $domfile['locale'] . '.' . $file_extensions[$config['default_format']][0];
@@ -95,7 +110,7 @@ class TransCreateCommand extends ContainerAwareCommand
 
                     } else if ($a == 2) {
                         $clonedata = $common->getArrayFromFile($domainfiles['path'], $domainfiles['format']);
-                        if (!$clonedata) {
+                        if (!is_array($clonedata)) {
                             $output->writeln('TRANS:CREATE => ERROR : File "' . $domainfiles['default'] . '" cant´t be opened. Incorrect format?.');
                         } else {
                             $common->putArrayInFile($path, $config['default_format'], $clonedata);
@@ -104,7 +119,7 @@ class TransCreateCommand extends ContainerAwareCommand
 
                     } else if ($a == 3) {
                         $clonedata = $common->getArrayFromFile($domainfiles['path'], $domainfiles['format']);
-                        if (!$clonedata) {
+                        if (!is_array($clonedata)) {
                             $output->writeln('TRANS:CREATE => ERROR : File "' . $domainfiles['default'] . '" cant´t be opened. Incorrect format?.');
                         } else {
                             foreach ($clonedata as $key => $value) {

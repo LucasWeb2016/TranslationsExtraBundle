@@ -58,7 +58,7 @@ class TransRemoveCommand extends ContainerAwareCommand
             die();
         } else {
             $defaultdata = $common->getArrayFromFile($domainfiles['path'], $domainfiles['format']);
-            if (!$defaultdata) {
+            if (!is_array($defaultdata)) {
                 $output->writeln('TRANS:REMOVE => WARNING : Default locale file "' . $domainfiles['default'] . '" cant´t be opened. Incorrect format?. Process will continue without this file.');
 
             } else {
@@ -84,7 +84,7 @@ class TransRemoveCommand extends ContainerAwareCommand
                     $output->writeln('TRANS:REMOVE => WARNING : File "' . $other['filename'] . '" not found. Run "trans:repair ' . $input->getArgument('domain') . '" command to help you solve it. Process will continue without working in this file.');
                 } else {
                     $otherdata = $common->getArrayFromFile($other['path'], $other['format']);
-                    if (!$otherdata) {
+                    if (!is_array($otherdata)) {
                         $output->writeln('TRANS:REMOVE => WARNING : File "' . $other['filename'] . '" cant´t be opened. Incorrect format?. Process will continue without this file.');
                     } else {
                         if (!isset($otherdata[$input->getArgument('id')])) {

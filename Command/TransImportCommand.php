@@ -5,6 +5,7 @@ namespace Lucasweb\TranslationsExtraBundle\Command;
 use Lucasweb\TranslationsExtraBundle\Utils\CommonUtils;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Filesystem\Filesystem;
@@ -83,16 +84,23 @@ class TransImportCommand extends ContainerAwareCommand
                     if ($found['path'] != '') {
                         $a = 0;
                         while ($a <= 0) {
-                            $question = new Question('TRANS:IMPORT => QUESTION : There is already a translation file for locale "' . $file['locale'] . '" and domain "' . $input->getArgument('domain') . '". Do not import (1), Overwrite content(2) ', 1);
+                            $question = new ChoiceQuestion(
+                                'TRANS:IMPORT => QUESTION : There is already a translation file for locale "' . $file['locale'] . '" and domain "' . $input->getArgument('domain') ,
+                                array('Skip', 'Overwrite content'),
+                                0
+                            );
+                            $question->setErrorMessage('Option %s is invalid.');
+                            $answers=array('Skip', 'Create new empty file', 'Create a clon of default file', 'Create a clon of default file and translate it with Yandex Translate API');
                             $replytarget = $helper->ask($input, $output, $question);
-                            if ($replytarget == 1 || $replytarget == 2) {
+                            $answer=array_search($replytarget,$answers);
+                            if ($answer == 0 || $answer == 1) {
                                 $a = 1;
                             }
                         }
 
-                        if ($replytarget == 2) {
+                        if ($answer == 1) {
                             $dataoriginal = $common->getArrayFromFile($file['path'], $file['format']);
-                            if (!$dataoriginal) {
+                            if (!is_array($dataoriginal)) {
                                 $output->writeln('TRANS:IMPORT => ERROR : File "' . $file['filename'] . '" cant´t be opened. Incorrect format?. Import aborted.');
                             } else {
                                 $common->putArrayInFile($found['path'], $found['format'], $dataoriginal);
@@ -105,7 +113,7 @@ class TransImportCommand extends ContainerAwareCommand
                         }
                     } else {
                         $dataoriginal = $common->getArrayFromFile($file['path'], $file['format']);
-                        if (!$dataoriginal) {
+                        if (!is_array($dataoriginal)) {
                             $output->writeln('TRANS:IMPORT => ERROR : File "' . $file['filename'] . '" cant´t be opened. Incorrect format?. Import aborted.');
                         } else {
                             $path = $config['main_folder'] . '/' . $input->getArgument('domain') . '.' . $file['locale'] . '.' . $file_extensions[$config['default_format']][0];

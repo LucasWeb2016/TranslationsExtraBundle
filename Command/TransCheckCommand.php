@@ -67,7 +67,7 @@ class TransCheckCommand extends ContainerAwareCommand
 
         } else {
             $defaultdata = $common->getArrayFromFile($domainfiles['path'], $domainfiles['format']);
-            if ($defaultdata) {
+            if (is_array($defaultdata)) {
                 $domainfiles['status'] = 'Ok!';
                 $rows[] = [$domainfiles['locale'], $domainfiles['default'], $domainfiles['format'], count($defaultdata), $domainfiles['status']];
             } else {
@@ -85,8 +85,8 @@ class TransCheckCommand extends ContainerAwareCommand
                     $other['status'] = 'File not found, Run "trans:create ' . $input->getArgument('domain') . '" to solve it!';
                 } else {
                     $otherdata = $common->getArrayFromFile($other['path'], $other['format']);
-                    if ($otherdata) {
-                        if($defaultdata){
+                    if (is_array($otherdata)) {
+                        if(is_array($defaultdata)){
                             if (count($defaultdata) == count($otherdata)) {
                                 $other['status'] = 'Ok!';
                             } else {
