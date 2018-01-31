@@ -268,5 +268,5 @@ You can also import files from any folder. The following command would do the sa
 This bundle is under the MIT license. See the complete license in the bundle.
 
 # Reporting an issue or a feature request
-Issues and feature requests are tracked in the Github issue tracker.
+Issues and feature requests are tracked in the [Github issue tracker](https://github.com/LucasWeb2016/TranslationsExtraBundle/issues).
 
