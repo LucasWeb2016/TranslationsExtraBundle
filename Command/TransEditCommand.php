@@ -4,6 +4,7 @@ namespace Lucasweb\TranslationsExtraBundle\Command;
 
 use Lucasweb\TranslationsExtraBundle\Utils\CommonUtils;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Filesystem\Filesystem;
@@ -31,6 +32,7 @@ class TransEditCommand extends ContainerAwareCommand
     {
         $output->writeln('TRANS:EDIT => INFO : Starting Edit Process ...');
         $helper = $this->getHelper('question');
+        QuestionHelper::disableStty();
         $filesystem = new Filesystem();
 
         // Get Configurations and Files to process

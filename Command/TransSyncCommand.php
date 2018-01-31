@@ -4,6 +4,7 @@ namespace Lucasweb\TranslationsExtraBundle\Command;
 
 use Lucasweb\TranslationsExtraBundle\Utils\CommonUtils;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -29,6 +30,7 @@ class TransSyncCommand extends ContainerAwareCommand
     {
         $output->writeln('TRANS:SYNC => INFO : Starting Sync Process ...');
         $helper = $this->getHelper('question');
+        QuestionHelper::disableStty();
 
         // Get Configurations and Files to process
         $common = new CommonUtils();

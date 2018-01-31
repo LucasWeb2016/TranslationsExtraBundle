@@ -4,6 +4,7 @@ namespace Lucasweb\TranslationsExtraBundle\Command;
 
 use Lucasweb\TranslationsExtraBundle\Utils\CommonUtils;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Filesystem\Filesystem;
@@ -30,6 +31,7 @@ class TransAddCommand extends ContainerAwareCommand
     {
         $output->writeln('TRANS:ADD => INFO : Starting Add Process ...');
         $helper = $this->getHelper('question');
+        QuestionHelper::disableStty();
         $filesystem = new Filesystem();
 
         // Get Configurations and Files to process
@@ -83,7 +85,6 @@ class TransAddCommand extends ContainerAwareCommand
                         $a = 1;
                     }
                 }
-
                 $defaultdata[$replytarget] = $replytarget2;
                 $common->putArrayInFile($domainfiles['path'], $domainfiles['format'], $defaultdata);
             }

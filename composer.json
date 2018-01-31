@@ -1,20 +1,21 @@
 {
   "name": "lucasweb/translations",
   "type": "symfony-bundle",
-  "description": "Add extra commands to Symfony for easy translations and translation files management. With Yandex Translate API support for suggestions and automatic translation of files.",
+  "description": "This Bundle adds extra commands to Symfony for easy managing translations. With Yandex Translate API support for automatic translations.",
   "keywords": [
     "console commands",
     "symfony translations",
     "symfony xliff",
-    "symfony translations manager"
+    "symfony translations manager",
+    "symfony automatic translation"
   ],
-  "homepage": "https://github.com/LucasWeb2016/symfony-TranslationExtraBundle",
-  "license": "GPL-3.0-or-later",
+  "homepage": "https://github.com/LucasWeb2016/TranslationExtraBundle",
+  "license": "MIT",
   "minimum-stability": "dev",
   "authors": [
     {
       "name": "Lucasweb",
-      "homepage": "https://github.com/LucasWeb2016/Lucasweb-TranslationsExtraBundle"
+      "homepage": "https://github.com/LucasWeb2016/TranslationsExtraBundle"
     }
   ],
   "require": {

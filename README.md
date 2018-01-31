@@ -45,7 +45,7 @@ This Bundle only need this config to start working:
     translations_extra:
 	    default_format: 'xml' 
 	    default_locale: 'es'
-	    other_locales: []
+	    other_locales: ['en,'fr']
 	    domains: ['messages','validators']
 	    main_folder: '%kernel.project_dir%/translations/'
 	    yandex_api_key: 'trnsl.1.1.4e434e....'

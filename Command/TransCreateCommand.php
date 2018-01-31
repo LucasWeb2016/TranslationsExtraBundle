@@ -126,7 +126,7 @@ class TransCreateCommand extends ContainerAwareCommand
                                 $clonedata[$key] = $common->YandexTrans($value, $domainfiles['locale'], $domfile['locale'], $config, $output);
                             }
                             $common->putArrayInFile($path, $config['default_format'], $clonedata);
-                            $output->writeln('TRANS:CREATE => SUCCESS : File "' . $domfile['filename'] . '" with Yandex Translation from default file create!');
+                            $output->writeln('TRANS:CREATE => SUCCESS : File "' . $domfile['filename'] . '" with Yandex Translation from default file created!');
                         }
 
                     }
