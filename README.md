@@ -1,6 +1,6 @@
 ﻿# Lucasweb\TranslationsExtraBundle
 
-[![Symfony](https://img.shields.io/badge/Symfony-4-green.svg)](https://symfony.com/) [![License](https://img.shields.io/badge/License-MIT-orange.svg)](https://github.com/LucasWeb2016/TranslationsExtraBundle/blob/master/LICENSE) [![Stable](https://img.shields.io/badge/Stable-1.0.2-blue.svg)](https://github.com/LucasWeb2016/TranslationsExtraBundle/releases/tag/1.0) [![Stable](https://img.shields.io/badge/Unstable-devmaster-red.svg)](https://github.com/LucasWeb2016/TranslationsExtraBundle)
+[![Symfony](https://img.shields.io/badge/Symfony-4-green.svg)](https://symfony.com/) [![License](https://img.shields.io/badge/License-MIT-orange.svg)](https://github.com/LucasWeb2016/TranslationsExtraBundle/blob/master/LICENSE) [![Stable](https://img.shields.io/badge/Stable-1.0.3-blue.svg)](https://github.com/LucasWeb2016/TranslationsExtraBundle/releases/tag/1.0) [![Stable](https://img.shields.io/badge/Unstable-devmaster-red.svg)](https://github.com/LucasWeb2016/TranslationsExtraBundle)
 
 [![knpbundles.com](http://knpbundles.com/LucasWeb2016/TranslationsExtraBundle/badge-short)](http://knpbundles.com/LucasWeb2016/TranslationsExtraBundle)
 
