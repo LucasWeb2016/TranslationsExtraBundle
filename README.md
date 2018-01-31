@@ -13,11 +13,11 @@ This Bundle adds extra commands to Symfony for easy managing translations. With 
  - Search in translation files
  - Remove a translation message
  - Get info from a translation message
- - Check translations files
- - Sync translations files 
+ - Check translation files
+ - Sync translation files 
  - Create translation files
  - Import translation files
- - Yandex Translate API integrated
+ - Automatic translate with Yandex Translate API 
  
 ## Why create this Bundle?
  Honestly, I hate having to change tab when I need to create a new message while I'm working on a Twig template or a controller. 
@@ -52,9 +52,9 @@ This Bundle only need this config to start working:
 
 - **default_format (string, required)** : Format to be used by default in new files created by this bundle. Valid values are 'xml', 'yaml' and 'php'
 - **default_locale (string, required)** : Default locale in your symfony project. (Ex. 'en' or 'fr')
-- **other_locale (array, required)** : Array with other locales used in your project (Ex.  ['en','fr']. This can be an empty array if you want to use this Bundle only for your default locale. This configuration is required, but can be an empty array if no other locales.
-- **domains (array, required)** : Array with domains that will be accesible by this bundle. "messages" and "validator" are default domains in Symfony.
-- **main_folder (string, required)** : Main folder where translations files are stored. 
+- **other_locales (array, required)** : Array with other locales used in your project (Ex.  ['en','fr']. This can be an empty array if you want to use this Bundle only for your default locale. This configuration is required, but can be an empty array if no other locales.
+- **domains (array, required)** : Array with domains that will be accesible by this bundle. "messages" and "validators" are default domains in Symfony.
+- **main_folder (string, required)** : Main folder where translation files are stored. 
 - **yandex_api_key (string, optional)** : Yandex Translate API key from [here](http://api.yandex.com/key/form.xml?service=trnsl) . If configured, Yandex Translation will be activated.
 
 # How to use this bundle
@@ -77,7 +77,7 @@ This command adds a new message to all the locales of a domain if file exists.
     TRANS:ADD => SUCCESS : Translation message created!
 
 ## Search 
-Search for a string in all the translation files of a domain.
+Search for a string in all translation files of a domain.
      
      php bin/console trans:search "searchterm" domainname
 
@@ -96,7 +96,7 @@ Search for a string in all the translation files of a domain.
 
 
 ## Edit a translation message
-This command edits a ID in all the locales of a domain if file exists.
+This command edits an ID in all the locales of a domain if file exists.
 
 
      php bin/console trans:edit ID domainname
@@ -159,7 +159,7 @@ This command shows all locale translations of a ID
     TRANS:INFO => SUCCESS : Translation message info shown!
 
 
-## Check translations files 
+## Check translation files 
 
 Checks locale files supposed to exist for a domain, and report problems.
      
@@ -185,7 +185,7 @@ Checks locale files supposed to exist for a domain, and report problems.
 
 
 ## Sync translations files
-This command checks that all the language files have the same number of messages, and in case of finding some missing translation, gives the option to create a new message in the file where it is missing, or to delete the message from the file where it was found .
+This command checks that all translation files of a domain have the same number of messages, and in case of finding some missing translation, gives the option to create a new message in the file where it is missing, or to delete the message from the file where it was found .
 
      php bin/console trans:sync domainname
 
@@ -214,7 +214,7 @@ This command checks that all the language files have the same number of messages
     TRANS:SYNC => SUCCESS : Process finished!
 
     
-## Create translations files
+## Create translation files
 This command checks the existence of all the files that must exist according to the locales and domains configured, and allows you to create both empty files and clones of the default locale.
 
 
@@ -237,12 +237,12 @@ This command checks the existence of all the files that must exist according to 
 
     
 ## Import translations files
-In Symfony you can override translation messages from bundles in main folder. This commands checks a path or a composer installed package for translations files for locales in a domain, and imports them to main folder, where you can easily modify them. 
+In Symfony you can override translation messages from bundles in main folder. This commands checks a path or a composer installed package for translation files for locales in a domain, and imports them to main folder, where you can easily modify them. 
 
      php bin/console trans:import bundle/package domainname 
 
 **Example**
-In this example, the command imports Vich Uploader Translation files to our main folder according to locales and default format configured, and in the default format . Not needed files will not be imported. 
+In this example, the command imports Vich Uploader translation files to our main folder according to locales and default format configured, and in the default format . Not needed files will not be imported. 
 
     php bin/console trans:import Vich\Uploader-Bundle VichUploaderBundle
     

@@ -85,14 +85,14 @@ class TransImportCommand extends ContainerAwareCommand
                         $a = 0;
                         while ($a <= 0) {
                             $question = new ChoiceQuestion(
-                                'TRANS:IMPORT => QUESTION : There is already a translation file for locale "' . $file['locale'] . '" and domain "' . $input->getArgument('domain') ,
+                                'TRANS:IMPORT => QUESTION : There is already a translation file for locale "' . $file['locale'] . '" and domain "' . $input->getArgument('domain'),
                                 array('Skip', 'Overwrite content'),
                                 0
                             );
                             $question->setErrorMessage('Option %s is invalid.');
-                            $answers=array('Skip', 'Create new empty file', 'Create a clon of default file', 'Create a clon of default file and translate it with Yandex Translate API');
+                            $answers = array('Skip', 'Create new empty file', 'Create a clon of default file', 'Create a clon of default file and translate it with Yandex Translate API');
                             $replytarget = $helper->ask($input, $output, $question);
-                            $answer=array_search($replytarget,$answers);
+                            $answer = array_search($replytarget, $answers);
                             if ($answer == 0 || $answer == 1) {
                                 $a = 1;
                             }

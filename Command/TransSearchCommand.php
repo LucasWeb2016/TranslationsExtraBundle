@@ -55,11 +55,10 @@ class TransSearchCommand extends ContainerAwareCommand
         }
 
 
-
         //Proces
         $output->writeln('');
         $table = new Table($output);
-        $rows=[];
+        $rows = [];
         $table
             ->setHeaders(array('Locale', 'File', 'ID', 'Value'));
         if ($domainfiles['path'] == '') {
@@ -68,10 +67,9 @@ class TransSearchCommand extends ContainerAwareCommand
         } else {
             $defaultdata = $common->getArrayFromFile($domainfiles['path'], $domainfiles['format']);
             if (is_array($defaultdata)) {
-                foreach($defaultdata as $key => $value)
-                {
-                    $posvalue = strripos($value,$input->getArgument('searchterm'));
-                    $poskey=strripos((string)$key,$input->getArgument('searchterm'));
+                foreach ($defaultdata as $key => $value) {
+                    $posvalue = strripos($value, $input->getArgument('searchterm'));
+                    $poskey = strripos((string)$key, $input->getArgument('searchterm'));
                     if ($posvalue !== false || $poskey !== false) {
                         $rows[] = [$domainfiles['locale'], $domainfiles['default'], $key, $value];
                     }
@@ -85,16 +83,15 @@ class TransSearchCommand extends ContainerAwareCommand
                 if ($other['path'] != '') {
                     $otherdata = $common->getArrayFromFile($other['path'], $other['format']);
                     if (is_array($otherdata)) {
-                        foreach($otherdata as $key => $value)
-                        {
-                            $pos = strripos($value,$input->getArgument('searchterm'));
+                        foreach ($otherdata as $key => $value) {
+                            $pos = strripos($value, $input->getArgument('searchterm'));
                             if ($pos !== false) {
                                 $rows[] = [$other['locale'], $other['filename'], $key, $value];
 
                             }
 
-                            $posvalue = strripos($value,$input->getArgument('searchterm'));
-                            $poskey=strripos((string)$key,$input->getArgument('searchterm'));
+                            $posvalue = strripos($value, $input->getArgument('searchterm'));
+                            $poskey = strripos((string)$key, $input->getArgument('searchterm'));
                             if ($posvalue !== false || $poskey !== false) {
                                 $rows[] = [$other['locale'], $other['filename'], $key, $value];
                             }
@@ -108,7 +105,12 @@ class TransSearchCommand extends ContainerAwareCommand
         }
 
         $table->setRows($rows);
-        $table->render();
+        if (count($rows) >= 1) {
+            $table->render();
+        } else {
+            $output->writeln('TRANS:SEARCH => Nothing found !!!');
+
+        }
 
         $output->writeln('');
 

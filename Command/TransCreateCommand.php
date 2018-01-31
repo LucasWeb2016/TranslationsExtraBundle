@@ -96,9 +96,9 @@ class TransCreateCommand extends ContainerAwareCommand
                             );
                         }
                         $question->setErrorMessage('Option %s is invalid.');
-                        $answers=array('Skip', 'Create new empty file', 'Create a clon of default file', 'Create a clon of default file and translate it with Yandex Translate API');
+                        $answers = array('Skip', 'Create new empty file', 'Create a clon of default file', 'Create a clon of default file and translate it with Yandex Translate API');
                         $replytarget = $helper->ask($input, $output, $question);
-                        $answer=array_search($replytarget,$answers);
+                        $answer = array_search($replytarget, $answers);
                         if ($answer >= 0 && $answer <= 3) {
                             $a = $answer;
                         }

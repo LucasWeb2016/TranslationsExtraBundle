@@ -86,7 +86,7 @@ class TransCheckCommand extends ContainerAwareCommand
                 } else {
                     $otherdata = $common->getArrayFromFile($other['path'], $other['format']);
                     if (is_array($otherdata)) {
-                        if(is_array($defaultdata)){
+                        if (is_array($defaultdata)) {
                             if (count($defaultdata) == count($otherdata)) {
                                 $other['status'] = 'Ok!';
                             } else {
