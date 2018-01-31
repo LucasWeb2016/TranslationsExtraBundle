@@ -85,7 +85,7 @@ class TransSyncCommand extends ContainerAwareCommand
                                     $yandex = '';
                                     $yandexraw = '';
                                 } else {
-                                    $yandex = ' (Yandex Translation: ' . $trans . ' )';
+                                    $yandex = ' (Press enter for Yandex Translation: ' . $trans . ' )';
                                     $yandexraw = $trans;
                                 }
                             } else {
@@ -135,7 +135,7 @@ class TransSyncCommand extends ContainerAwareCommand
                                     $yandex = '';
                                     $yandexraw = '';
                                 } else {
-                                    $yandex = ' (Yandex Translation: ' . $trans . ' )';
+                                    $yandex = ' (Press enter for Yandex Translation: ' . $trans . ' )';
                                     $yandexraw = $trans;
                                 }
                             } else {

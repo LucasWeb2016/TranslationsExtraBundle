@@ -66,7 +66,7 @@ class TransEditCommand extends ContainerAwareCommand
                     $a = 0;
                     $replytarget = 0;
                     while ($a <= 0) {
-                        $question = new Question('TRANS:EDIT => QUESTION : New value for ID=' . $input->getArgument('id') . ' in default file ' . $domainfiles['default'] . ' (Current="' . $defaultdata[$input->getArgument('id')] . '") : ', $defaultdata[$input->getArgument('id')]);
+                        $question = new Question('TRANS:EDIT => QUESTION : New value for ID=' . $input->getArgument('id') . ' in default file ' . $domainfiles['default'] . ' (Press enter for current : "' . $defaultdata[$input->getArgument('id')] . '") : ', $defaultdata[$input->getArgument('id')]);
                         $replytarget = $helper->ask($input, $output, $question);
                         if (!$replytarget == '' && is_string($replytarget)) {
                             $a = 1;
@@ -103,7 +103,7 @@ class TransEditCommand extends ContainerAwareCommand
                                 } else {
                                     $yandex = '';
                                 }
-                                $question = new Question('TRANS:EDIT => QUESTION : New value for ID=' . $input->getArgument('id') . ' in file ' . $other['filename'] . ' (Current="' . $otherdata[$input->getArgument('id')] . '")' . $yandex . ' : ', $otherdata[$input->getArgument('id')]);
+                                $question = new Question('TRANS:EDIT => QUESTION : New value for ID=' . $input->getArgument('id') . ' in file ' . $other['filename'] . ' (Press enter for current : "' . $otherdata[$input->getArgument('id')] . '")' . $yandex . ' : ', $otherdata[$input->getArgument('id')]);
                                 $replytarget = $helper->ask($input, $output, $question);
                                 if (!$replytarget == '' && is_string($replytarget)) {
                                     $a = 1;
