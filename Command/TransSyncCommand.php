@@ -98,6 +98,7 @@ class TransSyncCommand extends ContainerAwareCommand
                                 $a = 1;
                             }
                         }
+                        $reply=$common->Sanitize($reply);
                         $otherdata[$key] = $reply;
                         $common->putArrayInFile($other['path'], $other['format'], $otherdata);
                         $output->writeln('TRANS:SYNC => INFO : ID="' . $key . '"" created in ' . $other['filename'] . '!');
@@ -148,7 +149,7 @@ class TransSyncCommand extends ContainerAwareCommand
                                 $a = 1;
                             }
                         }
-
+                        $reply=$common->Sanitize($reply);
                         $defaultdata[$key] = $reply;
                         $common->putArrayInFile($domainfiles['path'], $domainfiles['format'], $defaultdata);
                         $output->writeln('TRANS:SYNC => INFO : ID=' . $key . ' created in default file ' . $domainfiles['default']);

@@ -72,6 +72,7 @@ class TransEditCommand extends ContainerAwareCommand
                             $a = 1;
                         }
                     }
+                    $replytarget=$common->Sanitize($replytarget);
                     $defaultdata[$input->getArgument('id')] = $replytarget;
                     $common->putArrayInFile($domainfiles['path'], $domainfiles['format'], $defaultdata);
                 }
@@ -109,6 +110,7 @@ class TransEditCommand extends ContainerAwareCommand
                                     $a = 1;
                                 }
                             }
+                            $replytarget=$common->Sanitize($replytarget);
                             $otherdata[$input->getArgument('id')] = $replytarget;
                             $common->putArrayInFile($other['path'], $other['format'], $otherdata);
                         }

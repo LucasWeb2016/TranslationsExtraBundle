@@ -85,6 +85,8 @@ class TransAddCommand extends ContainerAwareCommand
                         $a = 1;
                     }
                 }
+                $replytarget=$common->Sanitize($replytarget);
+                $replytarget2=$common->Sanitize($replytarget2);
                 $defaultdata[$replytarget] = $replytarget2;
                 $common->putArrayInFile($domainfiles['path'], $domainfiles['format'], $defaultdata);
             }
@@ -123,6 +125,7 @@ class TransAddCommand extends ContainerAwareCommand
                                     $a = 1;
                                 }
                             }
+                            $replytarget3=$common->Sanitize($replytarget3);
                             $otherdata[$replytarget] = $replytarget3;
                             $common->putArrayInFile($other['path'], $other['format'], $otherdata);
                         }
